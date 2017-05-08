@@ -66,15 +66,66 @@ class AdsSoapClient extends SoapClient {
   }
 
   /**
+   * Replaced __doRequest() method to support curl calls via socks5 proxies
+   *
    * @see SoapClient::__doRequest
    */
   public function __doRequest(
       $request, $location, $action, $version, $one_way = 0) {
     $request = SoapRequests::replaceReferences($request);
-    $response =
-        parent::__doRequest($request, $location, $action, $version, $one_way);
-    $this->__last_request = $request;
-    return $response;
+
+    // Read oAuth token
+    $auth = $this->headerHandler->generateHttpHeaders($this->adsSession);
+
+    // Build required header
+    $header = [
+      'Content-type: text/xml;charset="utf-8"',
+      "Accept: text/xml",
+      "Cache-Control: no-cache",
+      "Pragma: no-cache",
+      "SOAPAction: " . $action ,
+      "Content-length: " . strlen($request),
+      "Authorization: " . $auth['Authorization']
+    ];
+
+    // Set required curl options
+    $options = [
+      CURLOPT_RETURNTRANSFER  => true,
+      CURLOPT_HEADER          => true,
+      CURLOPT_FOLLOWLOCATION  => true,
+      CURLOPT_SSL_VERIFYHOST  => false,
+      CURLOPT_SSL_VERIFYPEER  => false,
+      CURLOPT_URL             => $location,
+      CURLOPT_POSTFIELDS      => $request,
+      CURLOPT_HTTPHEADER      => $header
+    ];
+
+    // Init curl
+    $soap_do = curl_init();
+    curl_setopt_array($soap_do , $options);
+
+    // Add proxy settings for host
+    if (\Hits\AdWords\Client::$proxyHost !== null && \Hits\AdWords\Client::$proxyHost !== '') {
+      curl_setopt($soap_do, CURLOPT_PROXY, \Hits\AdWords\Client::$proxyHost);
+      curl_setopt($soap_do, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+    }
+
+    // Add proxy setting for proxy port
+    if (\Hits\AdWords\Client::$proxyPort !== null && \Hits\AdWords\Client::$proxyPort !== '') {
+      curl_setopt($soap_do, CURLOPT_PROXYPORT, \Hits\AdWords\Client::$proxyPort);
+    }
+
+    // Execute query
+    $response = curl_exec($soap_do);
+    curl_close($soap_do);
+
+    // Split Header and body
+    list($headers, $content) = explode("\r\n\r\n", $response, 2);
+
+    // Set internal header cache
+    $this->__last_response_headers = $headers;
+
+    return $content;
   }
 
   /**

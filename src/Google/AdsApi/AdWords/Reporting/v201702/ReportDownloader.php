@@ -26,6 +26,9 @@ use Google\AdsApi\Common\GuzzleLogMessageHandler;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Handler\CurlHandler;
+use GuzzleHttp\Handler\CurlMultiHandler;
+use GuzzleHttp\Handler\Proxy;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
@@ -63,7 +66,7 @@ final class ReportDownloader {
     $this->session = $session;
 
     if ($httpClient === null) {
-      $stack = HandlerStack::create();
+      $stack = HandlerStack::create(Proxy::wrapSync(new CurlMultiHandler(), new CurlHandler()));
       $stack->before(
           'http_errors',
           GuzzleLogMessageHandler::log(
