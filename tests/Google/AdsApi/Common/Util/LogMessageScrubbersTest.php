@@ -16,8 +16,7 @@
  */
 namespace Google\AdsApi\Common\Util;
 
-use PHPUnit_Framework_TestCase;
-use ReflectionClass;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for `LogMessageScrubbers`.
@@ -25,7 +24,7 @@ use ReflectionClass;
  * @see LogMessageScrubbers
  * @small
  */
-class LogMessageScrubbersTest extends PHPUnit_Framework_TestCase {
+class LogMessageScrubbersTest extends TestCase {
 
   /**
    * @covers Google\AdsApi\Common\Util\LogMessageScrubbers::scrubRequestHttpHeaders
@@ -110,5 +109,101 @@ class LogMessageScrubbersTest extends PHPUnit_Framework_TestCase {
     $scrubbedSoapHeaders = LogMessageScrubbers::scrubRequestSoapHeaders(
         $originalSoapXml, []);
     $this->assertSame($originalSoapXml, $scrubbedSoapHeaders);
+  }
+
+  /**
+   * @covers Google\AdsApi\Common\Util\LogMessageScrubbers::scrubRequestSoapBodyTags
+   */
+  public function testScrubOneSoapBodyTag() {
+    $originalSoapXml = '<xml><SOAP-ENV:Body>'
+        . '<httpAuthorizationHeader>Bearer 1234xyz</httpAuthorizationHeader>'
+        . '</SOAP-ENV:Body></xml>';
+    $expectedSoapXml = '<xml><SOAP-ENV:Body>'
+        . '<httpAuthorizationHeader>REDACTED</httpAuthorizationHeader>'
+        . '</SOAP-ENV:Body></xml>';
+    $scrubbedSoapHeaders = LogMessageScrubbers::scrubRequestSoapBodyTags(
+        $originalSoapXml, ['httpAuthorizationHeader']);
+    $this->assertSame($expectedSoapXml, $scrubbedSoapHeaders);
+  }
+
+  /**
+   * @covers Google\AdsApi\Common\Util\LogMessageScrubbers::scrubRequestSoapBodyTags
+   */
+  public function testScrubTwoSoapBodyTags() {
+    $originalSoapXml = '<xml><SOAP-ENV:Body>'
+        . '<httpAuthorizationHeader>Bearer 1234xyz</httpAuthorizationHeader>'
+        . '<sensitiveTag>Secret!</sensitiveTag>'
+        . '</SOAP-ENV:Body></xml>';
+    $expectedSoapXml = '<xml><SOAP-ENV:Body>'
+        . '<httpAuthorizationHeader>REDACTED</httpAuthorizationHeader>'
+        . '<sensitiveTag>REDACTED</sensitiveTag>'
+        . '</SOAP-ENV:Body></xml>';
+    $scrubbedSoapHeaders = LogMessageScrubbers::scrubRequestSoapBodyTags(
+        $originalSoapXml, ['httpAuthorizationHeader', 'sensitiveTag']);
+    $this->assertSame($expectedSoapXml, $scrubbedSoapHeaders);
+  }
+
+  /**
+   * @covers Google\AdsApi\Common\Util\LogMessageScrubbers::scrubRequestSoapBodyTags
+   */
+  public function testScrubSoapBodyTagsNothingToScrubNoOp() {
+    $originalSoapXml = '<xml><SOAP-ENV:Body>'
+        . '<httpAuthorizationHeader>Bearer 1234xyz</httpAuthorizationHeader>'
+        . '</SOAP-ENV:Body></xml>';
+    $scrubbedSoapHeaders = LogMessageScrubbers::scrubRequestSoapBodyTags(
+        $originalSoapXml, []);
+    $this->assertSame($originalSoapXml, $scrubbedSoapHeaders);
+  }
+
+  /**
+   * @covers Google\AdsApi\Common\Util\LogMessageScrubbers::scrubHttpHeadersArray
+   */
+  public function testScrubOneHttpHeaderInArray() {
+    $originalHttpHeaders = [
+        'server' => 'https://abc.xyz',
+        'Authorization' => 'Bearer 123.abc.456.xyz',
+        'Bear' => 'Sheep'
+    ];
+    $expectedScrubbedHttpHeaders = [
+        'server' => 'https://abc.xyz',
+        'Authorization' => 'REDACTED',
+        'Bear' => 'Sheep'
+    ];
+    $scrubbedHttpHeaders = LogMessageScrubbers::scrubHttpHeadersArray(
+        $originalHttpHeaders, ['Authorization']);
+    $this->assertSame($expectedScrubbedHttpHeaders, $scrubbedHttpHeaders);
+  }
+
+  /**
+   * @covers Google\AdsApi\Common\Util\LogMessageScrubbers::scrubHttpHeadersArray
+   */
+  public function testScrubTwoHttpHeadersInArray() {
+    $originalHttpHeaders = [
+        'server' => 'https://abc.xyz',
+        'Authorization' => 'Bearer 123.abc.456.xyz',
+        'Bear' => 'Sheep'
+    ];
+    $expectedScrubbedHttpHeaders = [
+        'server' => 'https://abc.xyz',
+        'Authorization' => 'REDACTED',
+        'Bear' => 'REDACTED'
+    ];
+    $scrubbedHttpHeaders = LogMessageScrubbers::scrubHttpHeadersArray(
+        $originalHttpHeaders, ['Authorization', 'Bear']);
+    $this->assertSame($expectedScrubbedHttpHeaders, $scrubbedHttpHeaders);
+  }
+
+  /**
+   * @covers Google\AdsApi\Common\Util\LogMessageScrubbers::scrubHttpHeadersArray
+   */
+  public function testScrubHttpHeadersInArrayNothingToScrubNoOp() {
+    $originalHttpHeaders = [
+        'server' => 'https://abc.xyz',
+        'Authorization' => 'Bearer 123.abc.456.xyz',
+        'Bear' => 'Sheep'
+    ];
+    $scrubbedHttpHeaders = LogMessageScrubbers::scrubHttpHeadersArray(
+        $originalHttpHeaders, []);
+    $this->assertSame($originalHttpHeaders, $scrubbedHttpHeaders);
   }
 }

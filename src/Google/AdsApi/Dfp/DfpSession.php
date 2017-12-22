@@ -16,7 +16,9 @@
  */
 namespace Google\AdsApi\Dfp;
 
+use Google\AdsApi\Common\AdsHeaderFormatter;
 use Google\AdsApi\Common\AdsSession;
+use Psr\Log\LoggerInterface;
 
 /**
  * A session for using the DFP API.
@@ -27,9 +29,11 @@ final class DfpSession implements AdsSession {
   private $applicationName;
   private $endpoint;
   private $oAuth2Credential;
+  private $connectionSettings;
   private $soapSettings;
   private $soapLogger;
   private $reportDownloaderLogger;
+  private $adsHeaderFormatter;
 
   /**
    * Creates a DFP session from the specified builder.
@@ -45,7 +49,9 @@ final class DfpSession implements AdsSession {
     $this->applicationName = $builder->getApplicationName();
     $this->endpoint = $builder->getEndpoint();
     $this->oAuth2Credential = $builder->getOAuth2Credential();
+    $this->connectionSettings = $builder->getConnectionSettings();
     $this->soapSettings = $builder->getSoapSettings();
+    $this->adsHeaderFormatter = $builder->getAdsHeaderFormatter();
     $this->soapLogger = $builder->getSoapLogger();
     $this->reportDownloaderLogger = $builder->getReportDownloaderLogger();
   }
@@ -81,6 +87,13 @@ final class DfpSession implements AdsSession {
   }
 
   /**
+   * @see AdsSession::getConnectionSettings()
+   */
+  public function getConnectionSettings() {
+    return $this->connectionSettings;
+  }
+
+  /**
    * @see AdsSession::getSoapSettings()
    */
   public function getSoapSettings() {
@@ -100,5 +113,13 @@ final class DfpSession implements AdsSession {
    */
   public function getReportDownloaderLogger() {
     return $this->reportDownloaderLogger;
+  }
+
+  /**
+   * Gets the ads header formatter.
+   * @return AdsHeaderFormatter
+   */
+  public function getAdsHeaderFormatter() {
+    return $this->adsHeaderFormatter;
   }
 }

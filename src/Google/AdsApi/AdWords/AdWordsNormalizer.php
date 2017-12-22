@@ -95,12 +95,16 @@ final class AdWordsNormalizer extends GetSetMethodNormalizer {
       $data['@xsi:type'] = 'ns1:' . $reflClass->getShortName();
     }
 
-    foreach ($reflClass->getMethods(\ReflectionMethod::IS_PUBLIC)
-        as $reflMethod) {
-      if (strpos($reflMethod->name, 'get') !== 0) {
+    foreach ($reflClass->getProperties(
+        \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PRIVATE)
+            as $reflProperty) {
+      $methodName = 'get' . ucfirst($reflProperty->getName());
+      if (!$reflClass->hasMethod($methodName)
+          || !$reflClass->getMethod($methodName)->isPublic()) {
         continue;
       }
 
+      $reflMethod = $reflClass->getMethod($methodName);
       $attributeValue = $reflMethod->invoke($object);
 
       if ($attributeValue !== null) {
@@ -116,7 +120,7 @@ final class AdWordsNormalizer extends GetSetMethodNormalizer {
         $attributeValue =
             $this->serializer->normalize($attributeValue, $format, $context);
 
-        $attribute = lcfirst(substr($reflMethod->name, 3));
+        $attribute = $reflProperty->getName();
         if ($this->nameConverter) {
           $attribute = $this->nameConverter->normalize($attribute);
         }
@@ -175,7 +179,6 @@ final class AdWordsNormalizer extends GetSetMethodNormalizer {
             $typeHint);
       }
 
-      $needsRecursiveDenormalization = !is_scalar($value);
       // If the type hint of this value is an array and there's only one
       // element, then we need to wrap it in an array, as the decoder would
       // not have done so.
@@ -184,7 +187,7 @@ final class AdWordsNormalizer extends GetSetMethodNormalizer {
         $value = [$value];
       }
 
-      if ($needsRecursiveDenormalization === true) {
+      if (self::needsRecursiveDenormalization($value)) {
         $value = $this->serializer->denormalize(
             $value, $typeHint, $format, $context);
       }
@@ -199,9 +202,9 @@ final class AdWordsNormalizer extends GetSetMethodNormalizer {
   /**
    * Gets type from the PHP document block's `@return` tag.
    *
-   * @param DocBlock $docBlock the document block to get its @return type
+   * @param DocBlock $docBlock the document block to get its `@return` type
    * @return string|null the class name of the attribute or null if there
-   *     exists no @return tag in the document block
+   *     exists no `@return` tag in the document block
    */
   private function getReturnType(DocBlock $docBlock) {
     // The @return tag will be present for each getter method of generated
@@ -282,5 +285,27 @@ final class AdWordsNormalizer extends GetSetMethodNormalizer {
     return (count($array) === 0)
         ? false
         : array_keys($array) !== range(0, count($array) - 1);
+  }
+
+  private static function needsRecursiveDenormalization($value) {
+    // Scalar and null values don't need more denormalization.
+    if (is_scalar($value) || is_null($value)) {
+      return false;
+    }
+
+    // Check if this is a representation of an object. Recursive
+    // denormalization is needed in such a case.
+    if (self::isOneOrMany($value)) {
+      return true;
+    }
+
+    // Check if all members of the array are scalar values.
+    foreach ($value as $element) {
+      if (!is_scalar($element)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

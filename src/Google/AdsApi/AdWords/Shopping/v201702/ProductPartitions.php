@@ -216,6 +216,7 @@ final class ProductPartitions {
    *     API server
    * @param int $adGroupId the ID of ad group whose members will be presented
    *     hierarchically
+   * @return string the representation of the ad group criteria
    */
   public static function showAdGroupTree(AdWordsServices $adWordsServices,
       AdWordsSession $session, $adGroupId) {
@@ -240,7 +241,9 @@ final class ProductPartitions {
       if ($page->getEntries() !== null) {
         $totalNumEntries = $page->getTotalNumEntries();
         foreach ($page->getEntries() as $adGroupCriterion) {
-          $children[$adGroupCriterion->getCriterion()->getId()] = [];
+          if (!array_key_exists($adGroupCriterion->getCriterion()->getId(), $children)) {
+            $children[$adGroupCriterion->getCriterion()->getId()] = [];
+          }
 
           if ($adGroupCriterion->getCriterion()->getParentCriterionId()
               !== null) {

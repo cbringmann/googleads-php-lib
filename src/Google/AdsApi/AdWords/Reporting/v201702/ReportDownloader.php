@@ -16,11 +16,12 @@
  */
 namespace Google\AdsApi\AdWords\Reporting\v201702;
 
+use Google\AdsApi\AdWords\AdWordsGuzzleLogMessageFormatterProvider;
 use Google\AdsApi\AdWords\AdWordsNormalizer;
 use Google\AdsApi\AdWords\AdWordsSession;
+use Google\AdsApi\AdWords\ReportSettings;
 use Google\AdsApi\AdWords\Reporting\ApiErrorFieldNameConverter;
 use Google\AdsApi\AdWords\Reporting\ReportDownloadResult;
-use Google\AdsApi\AdWords\v201702\cm\ApiError;
 use Google\AdsApi\AdWords\v201702\cm\ApiException;
 use Google\AdsApi\Common\AdsGuzzleHttpClientFactory;
 use Google\AdsApi\Common\GuzzleHttpClientFactory;
@@ -40,6 +41,7 @@ final class ReportDownloader {
 
   private static $REPORT_DOWNLOAD_URL_PATH =
       '/api/adwords/reportdownload/v201702';
+  private static $REDACTED_DATA_MESSAGE = 'REDACTED REPORT DATA';
 
   private $session;
   private $httpClient;
@@ -66,8 +68,14 @@ final class ReportDownloader {
     $this->session = $session;
 
     if ($httpClientFactory === null) {
+      $logMessageFormatterProvider =
+          new AdWordsGuzzleLogMessageFormatterProvider(
+              $session, false, self::$REDACTED_DATA_MESSAGE);
       $httpClientFactory = new AdsGuzzleHttpClientFactory(
-          $this->session->getReportDownloaderLogger(), $httpClient);
+          $this->session->getReportDownloaderLogger(),
+          $logMessageFormatterProvider->getGuzzleLogMessageFormatter(),
+          $httpClient
+      );
     }
     $this->httpClient = $httpClientFactory->generateHttpClient();
 
@@ -85,13 +93,17 @@ final class ReportDownloader {
    *
    * @param ReportDefinition $reportDefinition the report definition to
    *     download
+   * @param null|ReportSettings $reportSettingsOverride the report settings used
+   *     to override the report settings of the AdWords session for this request
    * @return ReportDownloadResult the report download result
    * @throws ApiException if there are errors during downloading reports
    */
-  public function downloadReport(ReportDefinition $reportDefinition) {
+  public function downloadReport(ReportDefinition $reportDefinition,
+      ReportSettings $reportSettingsOverride = null) {
     return $this->makeReportRequest(
         $this->requestOptionsFactory
-            ->createRequestOptionsWithReportDefinition($reportDefinition)
+            ->createRequestOptionsWithReportDefinition(
+                $reportDefinition, $reportSettingsOverride)
     );
   }
 
@@ -100,13 +112,17 @@ final class ReportDownloader {
    *
    * @param string $reportQuery the query to use for the report
    * @param string $reportFormat the report format to request
+   * @param null|ReportSettings $reportSettingsOverride the report settings used
+   *     to override the report settings of the AdWords session for this request
    * @return ReportDownloadResult the report download result
    * @throws ApiException if there are errors during downloading reports
    */
-  public function downloadReportWithAwql($reportQuery, $reportFormat) {
+  public function downloadReportWithAwql($reportQuery, $reportFormat,
+      ReportSettings $reportSettingsOverride = null) {
     return $this->makeReportRequest(
         $this->requestOptionsFactory
-            ->createRequestOptionsWithAwqlQuery($reportQuery, $reportFormat)
+            ->createRequestOptionsWithAwqlQuery(
+                $reportQuery, $reportFormat, $reportSettingsOverride)
     );
   }
 
@@ -120,6 +136,15 @@ final class ReportDownloader {
    */
   private function makeReportRequest(array $requestOptions) {
     $requestOptions[RequestOptions::STREAM] = true;
+    $proxy = $this->session->getConnectionSettings()->getProxyUrl();
+    if (!empty($proxy)) {
+      $requestOptions[RequestOptions::PROXY] = ['https' => $proxy];
+    }
+    if ($this->session->getConnectionSettings()->isReportingGzipEnabled()
+        === true) {
+      $requestOptions[RequestOptions::DECODE_CONTENT] = 'gzip';
+    }
+
     try {
       $response = $this->httpClient->request(
           'POST',

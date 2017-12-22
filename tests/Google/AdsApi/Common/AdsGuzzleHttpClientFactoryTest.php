@@ -21,7 +21,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for `AdsGuzzleHttpClientFactory`.
@@ -29,18 +29,21 @@ use PHPUnit_Framework_TestCase;
  * @see AdsGuzzleHttpClientFactory
  * @small
  */
-class AdsGuzzleHttpClientFactoryTest extends PHPUnit_Framework_TestCase {
+class AdsGuzzleHttpClientFactoryTest extends TestCase {
 
   /**
    * @covers Google\AdsApi\Common\GuzzleHttpClientFactory::generateHttpClient
    */
   public function testGenerateHttpClient() {
     $logger = new Logger('', [new NullHandler()]);
+    $guzzleLogMessageFormatter = new GuzzleLogMessageFormatter([], [], false);
 
     $stack = HandlerStack::create();
-    $stack->before('http_errors', GuzzleLogMessageHandler::log($logger));
+    $stack->before('http_errors',
+        GuzzleLogMessageHandler::log($logger, $guzzleLogMessageFormatter));
 
-    $httpClientFactory = new AdsGuzzleHttpClientFactory($logger);
+    $httpClientFactory =
+        new AdsGuzzleHttpClientFactory($logger, $guzzleLogMessageFormatter);
     $httpClient = $httpClientFactory->generateHttpClient();
 
     $this->assertNotNull($httpClient);
@@ -53,13 +56,16 @@ class AdsGuzzleHttpClientFactoryTest extends PHPUnit_Framework_TestCase {
    */
   public function testGenerateHttpClient_userProvidedStack() {
     $logger = new Logger('', [new NullHandler()]);
+    $guzzleLogMessageFormatter = new GuzzleLogMessageFormatter([], [], false);
 
     $stack = HandlerStack::create();
-    $stack->before('http_errors', GuzzleLogMessageHandler::log($logger));
+    $stack->before('http_errors',
+        GuzzleLogMessageHandler::log($logger, $guzzleLogMessageFormatter));
     $stack->before('http_errors', Middleware::tap());
     $client = new Client(['handler' => $stack]);
 
-    $httpClientFactory = new AdsGuzzleHttpClientFactory($logger, $client);
+    $httpClientFactory = new AdsGuzzleHttpClientFactory(
+        $logger, $guzzleLogMessageFormatter, $client);
     $httpClient = $httpClientFactory->generateHttpClient();
 
     $this->assertNotNull($httpClient);
@@ -72,16 +78,19 @@ class AdsGuzzleHttpClientFactoryTest extends PHPUnit_Framework_TestCase {
    */
   public function testGenerateHttpClient_userProvidedConfigs() {
     $logger = new Logger('', [new NullHandler()]);
+    $guzzleLogMessageFormatter = new GuzzleLogMessageFormatter([], [], false);
 
     $stack = HandlerStack::create();
-    $stack->before('http_errors', GuzzleLogMessageHandler::log($logger));
+    $stack->before('http_errors',
+        GuzzleLogMessageHandler::log($logger, $guzzleLogMessageFormatter));
     $client = new Client([
         'handler' => $stack,
         'verify' => true,
         'cookies' => false
     ]);
 
-    $httpClientFactory = new AdsGuzzleHttpClientFactory($logger, $client);
+    $httpClientFactory = new AdsGuzzleHttpClientFactory(
+        $logger, $guzzleLogMessageFormatter, $client);
     $httpClient = $httpClientFactory->generateHttpClient();
 
     $this->assertNotNull($httpClient);

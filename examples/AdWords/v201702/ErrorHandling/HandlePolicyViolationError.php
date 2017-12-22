@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\ErrorHandling;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
@@ -66,7 +66,7 @@ class HandlePolicyViolationError {
 
     try {
       // Try creating an ad group ad on the server.
-      $result = $adGroupAdService->mutate($operations);
+      $adGroupAdService->mutate($operations);
     } catch (ApiException $apiException) {
       $operationIndicesToRemove = [];
       foreach ($apiException->getErrors() as $error) {

@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\Extensions;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
@@ -315,6 +315,7 @@ class AddSitelinksUsingFeeds {
    * @param string $line2 the first line of the sitelink description
    * @param string $line3 the second line of the sitelink description
    * @param int|null $locationId the criterion ID of location to be targeted
+   * @return FeedItemOperation the created ADD operation of site link feed item
    */
   private static function newSitelinkFeedItemAddOperation(
       array $sitelinksData,

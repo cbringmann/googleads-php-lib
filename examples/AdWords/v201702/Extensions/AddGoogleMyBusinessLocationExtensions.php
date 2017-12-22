@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\Extensions;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
@@ -37,6 +37,7 @@ use Google\AdsApi\AdWords\v201702\cm\OAuthInfo;
 use Google\AdsApi\AdWords\v201702\cm\Operator;
 use Google\AdsApi\AdWords\v201702\cm\PlacesLocationFeedData;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
+use RuntimeException;
 
 /**
  * This example adds a feed that syncs feed items from a Google
@@ -167,7 +168,7 @@ class AddGoogleMyBusinessLocationExtensions {
         && $addedCustomerFeed === null);
 
     if ($addedCustomerFeed === null) {
-      throw new Exception('Could not create the CustomerFeed after '
+      throw new RuntimeException('Could not create the CustomerFeed after '
           . self::MAX_CUSTOMER_FEED_ADD_ATTEMPTS . ' attempts. Please retry '
           . 'the CustomerFeed ADD operation later.');
     }

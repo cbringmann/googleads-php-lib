@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\CampaignManagement;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
@@ -88,8 +88,7 @@ class AddDraft {
     $operations[] = $operation;
 
     // Create a campaign criterion on the server.
-    $campaignCriterion =
-        $campaignCriterionService->mutate($operations)->getValue()[0];
+    $campaignCriterionService->mutate($operations);
 
     printf("Draft updated to include criteria in the campaign with ID %d.\n",
         $draft->getDraftCampaignId());

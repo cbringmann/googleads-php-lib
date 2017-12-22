@@ -18,10 +18,13 @@ namespace Google\AdsApi\Dfp\Util\v201702;
 
 use Google\AdsApi\Common\AdsGuzzleHttpClientFactory;
 use Google\AdsApi\Common\GuzzleHttpClientFactory;
+use Google\AdsApi\Dfp\DfpGuzzleLogMessageFormatterProvider;
+use Google\AdsApi\Dfp\DfpHeaderHandler;
 use Google\AdsApi\Dfp\v201702\ReportJobStatus;
 use Google\AdsApi\Dfp\v201702\ReportService;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\StreamInterface;
 use UnexpectedValueException;
 
 /**
@@ -37,6 +40,8 @@ class ReportDownloader {
    */
   const DEFAULT_POLL_SECONDS = 30;
 
+  private static $REDACTED_DATA_MESSAGE = 'REDACTED REPORT DATA';
+
   private $logger;
   private $reportService;
   private $reportJobId;
@@ -50,7 +55,7 @@ class ReportDownloader {
    * @param ReportService $reportService
    * @param int $reportJobId
    * @param int|null $pollTimeSeconds optional, specify the time to sleep, in
-   *     seconds, when polling for a report's tatus
+   *     seconds, when polling for a report's status
    * @param Client|null $httpClient optional, the Guzzle HTTP client whose
    *     handler stacks this library's logging middleware will be pushed to
    * @param GuzzleHttpClientFactory|null $httpClientFactory optional, the Guzzle
@@ -71,8 +76,13 @@ class ReportDownloader {
         ? self::DEFAULT_POLL_SECONDS : $pollTimeSeconds;
 
     if ($httpClientFactory === null) {
-      $httpClientFactory =
-          new AdsGuzzleHttpClientFactory($this->logger, $httpClient);
+      $logMessageFormatterProvider = new DfpGuzzleLogMessageFormatterProvider(
+          $reportService->getAdsSession(), false, self::$REDACTED_DATA_MESSAGE);
+      $httpClientFactory = new AdsGuzzleHttpClientFactory(
+          $this->logger,
+          $logMessageFormatterProvider->getGuzzleLogMessageFormatter(),
+          $httpClient
+      );
     }
     $this->httpClient = $httpClientFactory->generateHttpClient();
   }
@@ -115,12 +125,22 @@ class ReportDownloader {
   public function downloadReport($exportFormat, $filePath = null) {
     $downloadUrl = $this->getDownloadUrl($exportFormat);
 
+    $requestOptions = [];
+    $requestOptions[RequestOptions::HEADERS] = [
+        'User-Agent' => $this->getFormattedUserAgent()
+    ];
+    $proxy = $this->reportService->getAdsSession()->getConnectionSettings()
+        ->getProxyUrl();
+    if (!empty($proxy)) {
+      $requestOptions[RequestOptions::PROXY] = ['https' => $proxy];
+    }
     if ($filePath !== null) {
-      $this->httpClient->request(
-          'GET', $downloadUrl, [RequestOptions::SINK => $filePath]);
+      $requestOptions[RequestOptions::SINK] = $filePath;
+      $this->httpClient->request('GET', $downloadUrl, $requestOptions);
     } else {
+      $requestOptions[RequestOptions::STREAM] = true;
       $response = $this->httpClient->request(
-          'GET', $downloadUrl, [RequestOptions::STREAM => true]);
+          'GET', $downloadUrl, $requestOptions);
       return $response->getBody();
     }
   }
@@ -151,5 +171,15 @@ class ReportDownloader {
     }
     return $this->reportService->getReportDownloadURL($this->reportJobId,
         $exportFormat);
+  }
+
+  private function getFormattedUserAgent() {
+    $session = $this->reportService->getAdsSession();
+    return
+        $session->getAdsHeaderFormatter()->formatApplicationNameForGuzzleHeader(
+            $session->getApplicationName(),
+            DfpHeaderHandler::PRODUCT_NAME_FOR_SOAP_HEADER,
+            false
+    );
   }
 }

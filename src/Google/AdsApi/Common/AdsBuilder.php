@@ -30,20 +30,6 @@ interface AdsBuilder {
   const DEFAULT_CONFIGURATION_FILENAME = 'adsapi_php.ini';
 
   /**
-   * Reads configuration settings from the specified filepath. The filepath is
-   * optional, and if omitted, it will look for the default configuration
-   * filename in the home directory of the user running PHP.
-   *
-   * @see self::DEFAULT_CONFIGURATION_FILENAME
-   *
-   * @param string $path the filepath
-   * @return AdsBuilder this builder populated from the configuration
-   * @throws InvalidArgumentException if the configuration file could not be
-   *     found
-   */
-  public function fromFile($path = null);
-
-  /**
    * Populates this builder from the specified configuration object.
    *
    * @param Configuration $configuration the configuration
@@ -55,7 +41,7 @@ interface AdsBuilder {
    * Creates a new instance of the data object being populated. This method
    * should call defaultOptionals() and validate().
    * @return mixed the data object
-   * @throws InvalidArgumentException if there are any validation errors
+   * @throws \InvalidArgumentException if there are any validation errors
    */
   public function build();
 
@@ -67,7 +53,7 @@ interface AdsBuilder {
   /**
    * Checks that required fields have been included and all included
    * fields are valid (e.g., URIs are valid).
-   * @throws InvalidArgumentException if there are any validation errors
+   * @throws \InvalidArgumentException if there are any validation errors
    */
   public function validate();
 }

@@ -17,9 +17,9 @@
 namespace Google\AdsApi\AdWords;
 
 use Google\AdsApi\AdWords\Testing\AdWordsServicesIntegrationTestProvider;
-use Google\AdsApi\AdWords\v201702\cm\Campaign;
-use Google\AdsApi\AdWords\v201702\cm\CampaignService;
-use Google\AdsApi\AdWords\v201702\cm\Selector;
+use Google\AdsApi\AdWords\v201710\cm\Campaign;
+use Google\AdsApi\AdWords\v201710\cm\CampaignService;
+use Google\AdsApi\AdWords\v201710\cm\Selector;
 use Google\AdsApi\Common\AdsSoapClientFactory;
 use Google\AdsApi\Common\SoapSettingsBuilder;
 use Google\AdsApi\Common\Testing\ApplicationNames;
@@ -27,7 +27,7 @@ use Google\AdsApi\Common\Util\Reflection;
 use Google\Auth\FetchAuthTokenInterface;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Integration test for `AdWordsServices`.
@@ -39,7 +39,9 @@ use PHPUnit_Framework_TestCase;
  * @see AdWordsServices
  * @large
  */
-class AdWordsServicesIntegrationTest extends PHPUnit_Framework_TestCase {
+class AdWordsServicesIntegrationTest extends TestCase {
+
+  private static $WSDL_FILE_DIR;
 
   private $applicationNames;
   private $adWordsSession;
@@ -48,9 +50,11 @@ class AdWordsServicesIntegrationTest extends PHPUnit_Framework_TestCase {
   private $adWordsServices;
 
   /**
-   * @see PHPUnit_Framework_TestCase::setUp
+   * @see PHPUnit\Framework\TestCase::setUp
    */
   protected function setUp() {
+    error_reporting(E_ALL & ~E_USER_NOTICE);
+    self::$WSDL_FILE_DIR = __DIR__ . '/../../../../';
     $this->applicationNames = new ApplicationNames();
 
     $fetchAuthTokenInterfaceMock = $this
@@ -68,7 +72,10 @@ class AdWordsServicesIntegrationTest extends PHPUnit_Framework_TestCase {
     // using a partial mock.
     $this->campaignServiceMock = $this
         ->getMockBuilder(CampaignService::class)
-        ->setMethods(['__doRequest'])
+        ->setMethods(['__doRequest', '__construct'])
+        ->setConstructorArgs([
+            [], self::$WSDL_FILE_DIR
+                . 'src/Google/AdsApi/AdWords/Testing/campaign-service.wsdl'])
         ->getMock();
     // "Inject" the mock campaign service.
     $this->reflectionMock = $this
@@ -117,7 +124,7 @@ class AdWordsServicesIntegrationTest extends PHPUnit_Framework_TestCase {
     // Check that the campaign service (which is a SOAP client) has deserialized
     // the SOAP XML response to the Campaign object correctly.
     $actualCampaigns = $page->getEntries();
-    $this->assertSame(count($expectedCampaigns), count($actualCampaigns));
+    $this->assertCount(count($expectedCampaigns), $actualCampaigns);
 
     for ($i = 0; $i < count($actualCampaigns); $i++) {
       $expectedCampaign = $expectedCampaigns[$i];
@@ -176,7 +183,7 @@ class AdWordsServicesIntegrationTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @covers Google\AdsApi\AdWords\AdWordsServices::get
-   * @expectedException Google\AdsApi\AdWords\v201702\cm\ApiException
+   * @expectedException Google\AdsApi\AdWords\v201710\cm\ApiException
    * @expectedExceptionMessage [SelectorError.INVALID_FIELD_NAME @ serviceSelector; trigger:'asDEEf'; errorDetails:asDEEf]
    */
   public function testGetCallToCampaignServiceExpectFault() {
@@ -194,7 +201,7 @@ class AdWordsServicesIntegrationTest extends PHPUnit_Framework_TestCase {
     // SOAP XML response.
     $selector = new Selector();
     $selector->setFields(['Id', 'Name', 'Status', 'StartDate', 'EndDate']);
-    $page = $campaignService->get($selector);
+    $campaignService->get($selector);
   }
 
   /**

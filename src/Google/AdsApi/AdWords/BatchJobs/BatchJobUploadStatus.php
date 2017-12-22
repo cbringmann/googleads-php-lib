@@ -16,6 +16,7 @@
  */
 namespace Google\AdsApi\AdWords\BatchJobs;
 
+use Google\AdsApi\AdWords\AdWordsGuzzleLogMessageFormatterProvider;
 use Google\AdsApi\AdWords\AdWordsSession;
 use Google\AdsApi\Common\AdsGuzzleHttpClientFactory;
 use Google\AdsApi\Common\GuzzleHttpClientFactory;
@@ -29,6 +30,7 @@ use GuzzleHttp\RequestOptions;
  */
 final class BatchJobUploadStatus {
 
+  private $connectionSettings;
   private $totalContentBytes;
   private $resumableUploadUrl;
   private $httpClient;
@@ -52,9 +54,15 @@ final class BatchJobUploadStatus {
       Client $httpClient = null,
       GuzzleHttpClientFactory $httpClientFactory = null
   ) {
+    $this->connectionSettings = $session->getConnectionSettings();
     if ($httpClientFactory === null) {
+      $logMessageFormatterProvider =
+          new AdWordsGuzzleLogMessageFormatterProvider($session, true);
       $httpClientFactory = new AdsGuzzleHttpClientFactory(
-          $session->getBatchJobsUtilLogger(), $httpClient);
+          $session->getBatchJobsUtilLogger(),
+          $logMessageFormatterProvider->getGuzzleLogMessageFormatter(),
+          $httpClient
+      );
     }
     $this->httpClient = $httpClientFactory->generateHttpClient();
     $this->totalContentBytes =
@@ -73,16 +81,21 @@ final class BatchJobUploadStatus {
    * @return string the URL for the initiated resumable upload
    */
   private function initiateResumableUpload($uploadUrl) {
+    $requestOptions = [];
+    $requestOptions[RequestOptions::HEADERS] = [
+        'Content-Type' => 'application/xml',
+        'Content-Length' => 0,
+        'x-goog-resumable' => 'start'
+    ];
+    if (!empty($this->connectionSettings->getProxyUrl())) {
+      $requestOptions[RequestOptions::PROXY] = [
+        'https' => $this->connectionSettings->getProxyUrl()
+      ];
+    }
     // This follows the Google Cloud Storage guidelines for initiating
     // resumable uploads:
     // https://cloud.google.com/storage/docs/resumable-uploads-xml
-    $response = $this->httpClient->request('POST', $uploadUrl, [
-        RequestOptions::HEADERS => [
-            'Content-Type' => 'application/xml',
-            'Content-Length' => 0,
-            'x-goog-resumable' => 'start'
-        ]
-    ]);
+    $response = $this->httpClient->request('POST', $uploadUrl, $requestOptions);
 
     return $response->getHeader('Location')[0];
   }

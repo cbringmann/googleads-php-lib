@@ -21,7 +21,7 @@ use Google\Auth\FetchAuthTokenInterface;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -30,13 +30,13 @@ use Psr\Log\LoggerInterface;
  * @see AdWordsSessionBuilder
  * @small
  */
-class AdWordsSessionBuilderTest extends PHPUnit_Framework_TestCase {
+class AdWordsSessionBuilderTest extends TestCase {
 
   private $adWordsSessionBuilder;
   private $fetchAuthTokenInterfaceMock;
 
   /**
-   * @see PHPUnit_Framework_TestCase::setUp
+   * @see PHPUnit\Framework\TestCase::setUp
    */
   protected function setUp() {
     $this->adWordsSessionBuilder = new AdWordsSessionBuilder();
@@ -122,8 +122,8 @@ class AdWordsSessionBuilderTest extends PHPUnit_Framework_TestCase {
     $this->assertSame(
         'ABcdeFGH93KL-NOPQ_STUv', $adWordsSession->getDeveloperToken());
     $this->assertSame('report downloader', $adWordsSession->getUserAgent());
-    $this->assertTrue(filter_var(
-        $adWordsSession->getEndpoint(), FILTER_VALIDATE_URL) !== false);
+    $this->assertNotFalse(filter_var(
+        $adWordsSession->getEndpoint(), FILTER_VALIDATE_URL));
     $this->assertNull($adWordsSession->getClientCustomerId());
     $this->assertNotNull($adWordsSession->isPartialFailure());
     $this->assertNotNull($adWordsSession->isIncludeUtilitiesInUserAgent());
@@ -268,8 +268,8 @@ class AdWordsSessionBuilderTest extends PHPUnit_Framework_TestCase {
         $adWordsSession->getOAuth2Credential());
     $this->assertInstanceOf(
         LoggerInterface::class, $adWordsSession->getSoapLogger());
-    $this->assertTrue(filter_var(
-        $adWordsSession->getEndpoint(), FILTER_VALIDATE_URL) !== false);
+    $this->assertNotFalse(filter_var(
+        $adWordsSession->getEndpoint(), FILTER_VALIDATE_URL));
     $this->assertNull($adWordsSession->getClientCustomerId());
     $this->assertNotNull($adWordsSession->isPartialFailure());
     $this->assertNotNull($adWordsSession->isIncludeUtilitiesInUserAgent());

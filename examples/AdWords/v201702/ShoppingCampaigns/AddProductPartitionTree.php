@@ -16,32 +16,19 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\ShoppingCampaigns;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
 use Google\AdsApi\AdWords\AdWordsSessionBuilder;
 use Google\AdsApi\AdWords\Shopping\v201702\ProductPartitions;
-use Google\AdsApi\AdWords\v201702\cm\AdGroupCriterion;
-use Google\AdsApi\AdWords\v201702\cm\AdGroupCriterionOperation;
 use Google\AdsApi\AdWords\v201702\cm\AdGroupCriterionService;
-use Google\AdsApi\AdWords\v201702\cm\BiddableAdGroupCriterion;
-use Google\AdsApi\AdWords\v201702\cm\BiddingStrategyConfiguration;
-use Google\AdsApi\AdWords\v201702\cm\CpcBid;
-use Google\AdsApi\AdWords\v201702\cm\Criterion;
-use Google\AdsApi\AdWords\v201702\cm\Money;
-use Google\AdsApi\AdWords\v201702\cm\NegativeAdGroupCriterion;
-use Google\AdsApi\AdWords\v201702\cm\Operator;
 use Google\AdsApi\AdWords\v201702\cm\ProductBiddingCategory;
 use Google\AdsApi\AdWords\v201702\cm\ProductBrand;
 use Google\AdsApi\AdWords\v201702\cm\ProductCanonicalCondition;
 use Google\AdsApi\AdWords\v201702\cm\ProductCanonicalConditionCondition;
-use Google\AdsApi\AdWords\v201702\cm\ProductDimension;
 use Google\AdsApi\AdWords\v201702\cm\ProductDimensionType;
-use Google\AdsApi\AdWords\v201702\cm\ProductPartition;
-use Google\AdsApi\AdWords\v201702\cm\ProductPartitionType;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use ReflectionClass;
 
 /**
  * This example creates a product partition tree.
@@ -52,9 +39,6 @@ class AddProductPartitionTree {
 
   public static function runExample(AdWordsServices $adWordsServices,
       AdWordsSession $session, $adGroupId) {
-    $adGroupCriterionService =
-        $adWordsServices->get($session, AdGroupCriterionService::class);
-
     // The most trivial partition tree has only a unit node as the root:
     //   $productPartitions->createBiddableUnit(null, null, 100000);
 

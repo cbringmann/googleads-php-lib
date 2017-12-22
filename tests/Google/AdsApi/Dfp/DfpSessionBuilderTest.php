@@ -21,7 +21,7 @@ use Google\Auth\FetchAuthTokenInterface;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -30,13 +30,13 @@ use Psr\Log\LoggerInterface;
  * @see DfpSessionBuilder
  * @small
  */
-class DfpSessionBuilderTest extends PHPUnit_Framework_TestCase {
+class DfpSessionBuilderTest extends TestCase {
 
   private $dfpSessionBuilder;
   private $fetchAuthTokenInterfaceMock;
 
   /**
-   * @see PHPUnit_Framework_TestCase::setUp
+   * @see PHPUnit\Framework\TestCase::setUp
    */
   protected function setUp() {
     $this->dfpSessionBuilder = new DfpSessionBuilder();
@@ -102,8 +102,8 @@ class DfpSessionBuilderTest extends PHPUnit_Framework_TestCase {
     $this->assertSame('12345678', $dfpSession->getNetworkCode());
     $this->assertSame(
         'google report runner', $dfpSession->getApplicationName());
-    $this->assertTrue(
-        filter_var($dfpSession->getEndpoint(), FILTER_VALIDATE_URL) !== false);
+    $this->assertNotFalse(
+        filter_var($dfpSession->getEndpoint(), FILTER_VALIDATE_URL));
     $this->assertNotNull($dfpSession->getSoapSettings());
   }
 
@@ -224,8 +224,8 @@ class DfpSessionBuilderTest extends PHPUnit_Framework_TestCase {
     $this->assertSame('12345678', $dfpSession->getNetworkCode());
     $this->assertSame(
         'Google report runner', $dfpSession->getApplicationName());
-    $this->assertTrue(
-        filter_var($dfpSession->getEndpoint(), FILTER_VALIDATE_URL) !== false);
+    $this->assertNotFalse(
+        filter_var($dfpSession->getEndpoint(), FILTER_VALIDATE_URL));
     $this->assertInstanceOf(FetchAuthTokenInterface::class,
         $dfpSession->getOAuth2Credential());
     $this->assertNotNull($dfpSession->getSoapSettings());

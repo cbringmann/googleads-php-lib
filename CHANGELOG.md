@@ -1,3 +1,154 @@
+### 32.1.0
+
+##### DFP
+
+*   Added examples for v201711:
+    *   InventoryService\GetAdUnitHierarchy
+    *   InventoryService\GetTopLevelAdUnits
+    *   LineItemService\CreateLineItemsWithCustomCriteria
+    *   NetworkService\GetCurrentNetwork
+    *   NetworkService\MakeTestNetwork
+    *   PublisherQueryLanguageService\GetAllLineItems
+    *   PublisherQueryLanguageService\GetAllProgrammaticBuyers
+    *   PublisherQueryLanguageService\GetGeoTargets
+    *   ReportService\RunReachReport
+    *   ReportService\RunReportWithCustomFields
+    *   TeamService\UpdateTeams
+    *   UserService\GetCurrentUser
+    *   UserService\UpdateUsers
+
+*   Added utility class `CsvFiles` for v201711.
+
+##### Common
+
+*   Fixed
+    [issue #399](https://github.com/googleads/googleads-php-lib/issues/399).
+*   Fixed the issue that a wrong path to local WSDL files was specified in
+    `AdsSoapClient`.
+*   Accepted [PR #401](https://github.com/googleads/googleads-php-lib/pull/401).
+
+### 32.0.0
+
+##### AdWords
+
+*   Fixed
+    [issue #378](https://github.com/googleads/googleads-php-lib/issues/378).
+
+##### DFP
+
+*   Added support and examples for v201711.
+*   Added CdnConfigurationService and examples.
+*   Removed support for v201611.
+*   Removed examples for v201702.
+
+##### Common
+
+*   Included WSDL files for all SOAP services and they're now used for making
+    SOAP calls instead of live WSDLs. Therefore, the WSDL caching feature is
+    deprecated (`wsdlCache` in `adsapi_php.ini` is now ignored). The feature
+    will be removed completely in the next major release.
+
+### 31.0.0
+
+##### AdWords
+
+*   Added support and examples for v201710.
+*   Added an option for setting transparent HTTP gzip compression for reporting
+    in `adsapi_php.ini`.
+
+##### DFP
+
+*   Added UpdateLineItems and UpdateOrders examples.
+
+##### Common
+
+*   Removed the PROXY section in `adsapi_php.ini`. Use "proxy" under CONNECTION
+    instead.
+*   Added proxy support for non-SOAP utilities and OAuth authentication. See
+    the CONNECTION section in `adsapi_php.ini` for details.
+
+### 30.0.0
+
+##### AdWords
+
+*   Removed support and examples for v201609. See deprecation schedule at:
+    https://developers.google.com/adwords/api/docs/sunset-dates
+*   Fixed
+    [issue #349](https://github.com/googleads/googleads-php-lib/issues/349).
+
+### 29.0.0
+
+##### DFP
+
+*   Added support and examples for v201708.
+*   Removed examples for v201611.
+
+##### Common
+
+*   Fixed
+    [issue #320](https://github.com/googleads/googleads-php-lib/issues/320).
+
+### 28.1.0
+
+##### AdWords
+
+*   Added support and examples for v201708.
+*   Fixed
+    [issue #331](https://github.com/googleads/googleads-php-lib/issues/331).
+
+##### Common
+
+*   Added a getter for SOAP response header values and SOAP fault message.
+
+### 28.0.0
+
+##### AdWords
+
+*   Added support for redacting access tokens in SOAP body.
+*   Added support for overriding report settings in each report download
+    request.
+*   Fixed
+    [issue #247](https://github.com/googleads/googleads-php-lib/issues/247).
+
+##### Common
+
+*   Fixed
+    [issue #226](https://github.com/googleads/googleads-php-lib/issues/226).
+*   Fixed
+    [issue #244](https://github.com/googleads/googleads-php-lib/issues/244).
+*   Fixed
+    [issue #254](https://github.com/googleads/googleads-php-lib/issues/254).
+*   Fixed
+    [issue #261](https://github.com/googleads/googleads-php-lib/issues/261).
+*   Fixed
+    [issue #292](https://github.com/googleads/googleads-php-lib/issues/292).
+*   Fixed
+    [issue #306](https://github.com/googleads/googleads-php-lib/issues/306).
+
+### 27.1.0
+
+##### AdWords
+
+*   Added support and examples for v201705.
+*   Removed support for AdWords Express (AWX) API.
+*   Updated AddShoppingCampaign.php to include an option of creating an optional
+    default partition.
+
+##### Common
+
+*   Fixed issues #287 and #298 related to too many open file descriptors.
+
+### 27.0.0
+
+##### DFP
+
+*   Added support and examples for v201705.
+
+##### Common
+
+*   Added GuzzleLogMessageFormatter and refactored the Guzzle logging handler.
+*   Made user agents sent by non-SOAP utilities more informative.
+
 ### 26.0.0
 
 ##### AdWords

@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\BasicOperations;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
@@ -31,6 +31,7 @@ use Google\AdsApi\AdWords\v201702\cm\KeywordMatchType;
 use Google\AdsApi\AdWords\v201702\cm\Money;
 use Google\AdsApi\AdWords\v201702\cm\NegativeAdGroupCriterion;
 use Google\AdsApi\AdWords\v201702\cm\Operator;
+use Google\AdsApi\AdWords\v201702\cm\UrlList;
 use Google\AdsApi\AdWords\v201702\cm\UserStatus;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
 
@@ -61,7 +62,8 @@ class AddKeywords {
 
     // Set additional settings (optional).
     $adGroupCriterion->setUserStatus(UserStatus::PAUSED);
-    $adGroupCriterion->setFinalUrls(['http://www.example.com/mars']);
+    $adGroupCriterion->setFinalUrls(
+        new UrlList(['http://www.example.com/mars']));
 
     // Set bids (optional).
     $bid = new CpcBid();

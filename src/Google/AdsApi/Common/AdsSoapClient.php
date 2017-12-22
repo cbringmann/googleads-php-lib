@@ -17,6 +17,7 @@
 namespace Google\AdsApi\Common;
 
 use Google\AdsApi\Common\Util\Reflection;
+use Google\AdsApi\Common\Util\SoapHeaders;
 use Google\AdsApi\Common\Util\SoapRequests;
 use ReflectionException;
 use SoapClient;
@@ -36,6 +37,10 @@ class AdsSoapClient extends SoapClient {
     'ApiExceptionFault' => 'ApiException'
   ];
 
+  private static $RESOURCES_WSDLS_PATH_FORMAT =
+      '%1$s%2$s..%2$s..%2$s..%2$s..%2$sresources%2$swsdls';
+  private static $WSDL_FILE_EXTENSION = '.wsdl';
+
   private $wsdlUri;
   private $classmap;
   private $streamContext;
@@ -45,6 +50,8 @@ class AdsSoapClient extends SoapClient {
   private $serviceDescriptor;
   private $soapCallTimeout;
   private $reflection;
+  private $lastSoapFault;
+  private $lastResponseHeaderValues;
 
   /**
    * Creates a new instance of this SOAP client to interface with the specified
@@ -62,7 +69,15 @@ class AdsSoapClient extends SoapClient {
       $this->classmap = $options['classmap'];
     }
     $this->reflection = new Reflection();
-    parent::__construct($wsdl, $options);
+
+    $localWsdlPath = self::getLocalWsdlPath($wsdl);
+    if (!file_exists($localWsdlPath)) {
+      trigger_error("Local WSDLs bundled with this library were not found.\n",
+          E_USER_NOTICE);
+      parent::__construct($wsdl, $options);
+      return;
+    }
+    parent::__construct($localWsdlPath, $options);
   }
 
   /**
@@ -165,8 +180,9 @@ class AdsSoapClient extends SoapClient {
       ini_set('default_socket_timeout', $this->soapCallTimeout);
       $response = parent::__soapCall($function_name, $arguments, $options,
           $input_headers, $output_headers);
+      $this->processResponse($function_name);
     } catch (SoapFault $soapFault) {
-      $this->logSoapCall($function_name, $soapFault);
+      $this->processResponse($function_name, $soapFault);
 
       // If there's no detail, just throw the SOAP fault.
       if (!isset($soapFault->detail)) {
@@ -186,7 +202,6 @@ class AdsSoapClient extends SoapClient {
       ini_restore('default_socket_timeout');
     }
 
-    $this->logSoapCall($function_name);
     return $response;
   }
 
@@ -232,6 +247,14 @@ class AdsSoapClient extends SoapClient {
     }, $apiErrors));
 
     return $apiException;
+  }
+
+  private function processResponse($methodName, $soapFault = null) {
+    $this->lastResponseHeaderValues =
+        SoapHeaders::getSoapResponseHeaderValues($this->__getLastResponse());
+    $this->lastSoapFault = $soapFault;
+
+    $this->logSoapCall($methodName, $soapFault);
   }
 
   private function logSoapCall($methodName, SoapFault $soapFault = null) {
@@ -371,5 +394,55 @@ class AdsSoapClient extends SoapClient {
    */
   public function setSoapCallTimeout($soapCallTimeout) {
     $this->soapCallTimeout = $soapCallTimeout;
+  }
+
+  /**
+   * Returns true if there was a SOAP fault during the last call.
+   *
+   * @return boolean true if there was a SOAP fault
+   */
+  public function isLastSoapFault() {
+    return !is_null($this->lastSoapFault);
+  }
+
+  /**
+   * Gets the SOAP fault message if there was any.
+   *
+   * @return string the SOAP fault message
+   */
+  public function getLastSoapFaultMessage() {
+    return ($this->isLastSoapFault()) ?
+        $this->lastSoapFault->getMessage() : null;
+  }
+
+  /**
+   * Gets the last SOAP response header values as an associative array.
+   *
+   * @return array the SOAP response header values
+   */
+  public function getLastResponseHeaderValues() {
+    return $this->lastResponseHeaderValues;
+  }
+
+  /**
+   * Gets the path to stored WSDLs from the provided live WSDL URI.
+   */
+  private function getLocalWsdlPath($wsdl) {
+    $resourcesWsdlsPath = sprintf(
+        self::$RESOURCES_WSDLS_PATH_FORMAT,
+        __DIR__,
+        DIRECTORY_SEPARATOR
+    );
+    // parse_url() returns the path part of any URLs, which may be composed of
+    // many sub-paths delimited by forward slashes. We replace them with
+    // DIRECTORY_SEPARATOR (which works with any OSs) here to get paths to local
+    // WSDLs.
+    $wsdlFilePath = str_replace(
+        '/',
+        DIRECTORY_SEPARATOR,
+        parse_url($wsdl, PHP_URL_PATH)
+    );
+
+    return $resourcesWsdlsPath . $wsdlFilePath . self::$WSDL_FILE_EXTENSION;
   }
 }

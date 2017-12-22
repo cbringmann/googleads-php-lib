@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\ShoppingCampaigns;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
@@ -227,9 +227,6 @@ class AddShoppingCampaignForShowcaseAds {
   /** Creates the product partition tree for the ad group. */
   private static function createProductPartitions(
       AdWordsServices $adWordsServices, AdWordsSession $session, $adGroupId) {
-    $adGroupCriterionService =
-        $adWordsServices->get($session, AdGroupCriterionService::class);
-
     $operations = [];
 
     $root = ProductPartitions::createSubdivision();

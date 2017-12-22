@@ -16,12 +16,11 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\ErrorHandling;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
 use Google\AdsApi\AdWords\AdWordsSessionBuilder;
-use Google\AdsApi\AdWords\v201702\cm\AdGroupCriterion;
 use Google\AdsApi\AdWords\v201702\cm\AdGroupCriterionOperation;
 use Google\AdsApi\AdWords\v201702\cm\AdGroupCriterionService;
 use Google\AdsApi\AdWords\v201702\cm\BiddableAdGroupCriterion;

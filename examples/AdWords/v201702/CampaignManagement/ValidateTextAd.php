@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\CampaignManagement;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
@@ -64,7 +64,7 @@ class ValidateTextAd {
     $operations[] = $operation;
 
     try {
-      $result = $adGroupAdService->mutate($operations);
+      $adGroupAdService->mutate($operations);
       printf("The expanded text ad is valid.\n");
     } catch (ApiException $e) {
       $errors = $e->getErrors();

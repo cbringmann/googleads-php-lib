@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\Targeting;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
@@ -71,7 +71,7 @@ class LookupLocation {
           }
           $parentLocationsString = implode(', ', $parentLocations);
         } else {
-          $parentLocations = 'N/A';
+          $parentLocationsString = 'N/A';
         }
         printf(
             "The search term '%s' returned the location '%s' of type '%s' "

@@ -17,16 +17,16 @@
 namespace Google\AdsApi\AdWords;
 
 use Google\AdsApi\Common\AdsBuilder;
-use Google\AdsApi\Common\AdsLoggerConfig;
+use Google\AdsApi\Common\AdsHeaderFormatter;
 use Google\AdsApi\Common\AdsLoggerFactory;
 use Google\AdsApi\Common\Configuration;
 use Google\AdsApi\Common\ConfigurationLoader;
+use Google\AdsApi\Common\ConnectionSettings;
+use Google\AdsApi\Common\ConnectionSettingsBuilder;
 use Google\AdsApi\Common\SoapSettings;
 use Google\AdsApi\Common\SoapSettingsBuilder;
 use Google\Auth\FetchAuthTokenInterface;
 use InvalidArgumentException;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -55,6 +55,7 @@ final class AdWordsSessionBuilder implements AdsBuilder {
   private $adsLoggerFactory;
   private $configurationLoader;
   private $soapSettingsBuilder;
+  private $connectionSettingsBuilder;
   private $reportSettingsBuilder;
 
   private $developerToken;
@@ -62,13 +63,13 @@ final class AdWordsSessionBuilder implements AdsBuilder {
   private $endpoint;
   private $oAuth2Credential;
   private $soapSettings;
+  private $connectionSettings;
   private $clientCustomerId;
-  private $expressBusinessId;
-  private $expressPlusPageId;
   private $isValidateOnly;
   private $isPartialFailure;
   private $isIncludeUtilitiesInUserAgent;
   private $reportSettings;
+  private $adsHeaderFormatter;
 
   private $soapLogger;
   private $reportDownloaderLogger;
@@ -78,11 +79,21 @@ final class AdWordsSessionBuilder implements AdsBuilder {
     $this->adsLoggerFactory = new AdsLoggerFactory();
     $this->configurationLoader = new ConfigurationLoader();
     $this->soapSettingsBuilder = new SoapSettingsBuilder();
+    $this->connectionSettingsBuilder = new ConnectionSettingsBuilder();
     $this->reportSettingsBuilder = new ReportSettingsBuilder();
   }
 
   /**
-   * @see AdsBuilder::fromFile()
+   * Reads configuration settings from the specified filepath. The filepath is
+   * optional, and if omitted, it will look for the default configuration
+   * filename in the home directory of the user running PHP.
+   *
+   * @see AdsBuilder::DEFAULT_CONFIGURATION_FILENAME
+   *
+   * @param string $path the filepath
+   * @return AdWordsSessionBuilder this builder populated from the configuration
+   * @throws InvalidArgumentException if the configuration file could not be
+   *     found
    */
   public function fromFile($path = null) {
     if ($path === null) {
@@ -100,6 +111,8 @@ final class AdWordsSessionBuilder implements AdsBuilder {
     $this->userAgent = $configuration->getConfiguration('userAgent', 'ADWORDS');
     $this->endpoint = $configuration->getConfiguration('endpoint', 'ADWORDS');
 
+    $this->connectionSettings =
+        $this->connectionSettingsBuilder->from($configuration)->build();
     $this->soapSettings =
         $this->soapSettingsBuilder->from($configuration)->build();
 
@@ -188,6 +201,18 @@ final class AdWordsSessionBuilder implements AdsBuilder {
   }
 
   /**
+   * Includes connection settings. This is optional.
+   *
+   * @param ConnectionSettings|null $connectionSettings
+   * @return AdWordsSessionBuilder this builder
+   */
+  public function withConnectionSettings(
+      ConnectionSettings $connectionSettings) {
+    $this->connectionSettings = $connectionSettings;
+    return $this;
+  }
+
+  /**
    * Includes SOAP settings. This is optional.
    *
    * @see SoapSettingsBuilder::defaultOptionals()
@@ -238,6 +263,18 @@ final class AdWordsSessionBuilder implements AdsBuilder {
    */
   public function disableIncludeUtilitiesInUserAgent() {
     $this->isIncludeUtilitiesInUserAgent = false;
+    return $this;
+  }
+
+  /**
+   * Includes ads header formatter. This is optional.
+   *
+   * @param AdsHeaderFormatter|null $adsHeaderFormatter
+   * @return AdWordsSessionBuilder this builder
+   */
+  public function withAdsHeaderFormatter(
+      AdsHeaderFormatter $adsHeaderFormatter) {
+    $this->adsHeaderFormatter = $adsHeaderFormatter;
     return $this;
   }
 
@@ -319,8 +356,16 @@ final class AdWordsSessionBuilder implements AdsBuilder {
       $this->isIncludeUtilitiesInUserAgent = true;
     }
 
+    if ($this->adsHeaderFormatter === null) {
+      $this->adsHeaderFormatter = new AdsHeaderFormatter();
+    }
+
     if ($this->reportSettings === null) {
       $this->reportSettings = (new ReportSettingsBuilder())->build();
+    }
+
+    if ($this->connectionSettings === null) {
+      $this->connectionSettings = (new ConnectionSettingsBuilder())->build();
     }
 
     if ($this->soapSettings === null) {
@@ -401,6 +446,14 @@ final class AdWordsSessionBuilder implements AdsBuilder {
   }
 
   /**
+   * Gets the connection settings.
+   * @return ConnectionSettings
+   */
+  public function getConnectionSettings() {
+    return $this->connectionSettings;
+  }
+
+  /**
    * Gets the SOAP settings.
    * @return SoapSettings
    */
@@ -438,6 +491,14 @@ final class AdWordsSessionBuilder implements AdsBuilder {
    */
   public function isIncludeUtilitiesInUserAgent() {
     return $this->isIncludeUtilitiesInUserAgent;
+  }
+
+  /**
+   * Gets ads header formatter.
+   * @return AdsHeaderFormatter
+   */
+  public function getAdsHeaderFormatter() {
+    return $this->adsHeaderFormatter;
   }
 
   /**

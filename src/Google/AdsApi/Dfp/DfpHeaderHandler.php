@@ -16,11 +16,11 @@
  */
 namespace Google\AdsApi\Dfp;
 
+use Google\AdsApi\Common\AdsGuzzleProxyHttpHandler;
 use Google\AdsApi\Common\AdsHeaderFormatter;
 use Google\AdsApi\Common\AdsHeaderHandler;
 use Google\AdsApi\Common\AdsServiceDescriptor;
 use Google\AdsApi\Common\AdsSession;
-use Google\AdsApi\Common\LibraryMetadataProvider;
 use Google\AdsApi\Common\Util\OAuth2TokenRefresher;
 use Google\AdsApi\Common\Util\Reflection;
 use ReflectionClass;
@@ -48,7 +48,6 @@ final class DfpHeaderHandler implements AdsHeaderHandler {
    */
   private $httpHeadersToScrub = ['Authorization'];
 
-  private $libraryMetadataProvider;
   private $adsHeaderFormatter;
   private $reflection;
   private $oAuth2TokenRefresher;
@@ -57,7 +56,6 @@ final class DfpHeaderHandler implements AdsHeaderHandler {
    * Creates a new instance of this header handler.
    */
   public function __construct() {
-    $this->libraryMetadataProvider = new LibraryMetadataProvider();
     $this->adsHeaderFormatter = new AdsHeaderFormatter();
     $this->reflection = new Reflection();
     $this->oAuth2TokenRefresher = new OAuth2TokenRefresher();
@@ -67,10 +65,11 @@ final class DfpHeaderHandler implements AdsHeaderHandler {
    * @see AdsHeaderHandler::generateHttpHeaders()
    */
   public function generateHttpHeaders(AdsSession $session) {
+    $httpHandler = new AdsGuzzleProxyHttpHandler($session);
     $httpHeaders = ['Authorization' => sprintf(
         'Bearer %s',
         urlencode($this->oAuth2TokenRefresher->getOrFetchAccessToken(
-            $session->getOAuth2Credential()))
+            $session->getOAuth2Credential(), $httpHandler))
     )];
     return $httpHeaders;
   }
@@ -113,7 +112,6 @@ final class DfpHeaderHandler implements AdsHeaderHandler {
     return $this->adsHeaderFormatter->formatApplicationNameForSoapHeader(
         $applicationName,
         self::PRODUCT_NAME_FOR_SOAP_HEADER,
-        $this->libraryMetadataProvider,
         false
     );
   }

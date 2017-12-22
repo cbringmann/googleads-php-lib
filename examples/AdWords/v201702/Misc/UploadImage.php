@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\Misc;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
@@ -39,7 +39,7 @@ class UploadImage {
 
     // Create an image and add it to the images list.
     $image = new Image();
-    $image->setData(file_get_contents('http://goo.gl/HJM3L'));
+    $image->setData(file_get_contents('https://goo.gl/3b9Wfh'));
     $image->setType(MediaMediaType::IMAGE);
     $images = [$image];
 

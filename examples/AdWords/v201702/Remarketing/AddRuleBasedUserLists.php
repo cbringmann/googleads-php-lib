@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\Remarketing;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use DateTime;
 use Google\AdsApi\AdWords\AdWordsServices;
@@ -29,9 +29,6 @@ use Google\AdsApi\AdWords\v201702\rm\DateRuleItem;
 use Google\AdsApi\AdWords\v201702\rm\DateRuleItemDateOperator;
 use Google\AdsApi\AdWords\v201702\rm\DateSpecificRuleUserList;
 use Google\AdsApi\AdWords\v201702\rm\ExpressionRuleUserList;
-use Google\AdsApi\AdWords\v201702\rm\MutateMembersOperand;
-use Google\AdsApi\AdWords\v201702\rm\MutateMembersOperandDataType;
-use Google\AdsApi\AdWords\v201702\rm\MutateMembersOperation;
 use Google\AdsApi\AdWords\v201702\rm\NumberKey;
 use Google\AdsApi\AdWords\v201702\rm\NumberRuleItem;
 use Google\AdsApi\AdWords\v201702\rm\NumberRuleItemNumberOperator;

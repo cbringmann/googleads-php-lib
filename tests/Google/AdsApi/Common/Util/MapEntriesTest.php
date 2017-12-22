@@ -18,8 +18,7 @@ namespace Google\AdsApi\Common\Util;
 
 use Google\AdsApi\Common\Testing\FakeInvalidMapEntry;
 use Google\AdsApi\Common\Testing\FakeMapEntry;
-use PHPUnit_Framework_TestCase;
-use ReflectionClass;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for `MapEntries`.
@@ -27,7 +26,7 @@ use ReflectionClass;
  * @see MapEntries
  * @small
  */
-class MapEntriesTest extends PHPUnit_Framework_TestCase {
+class MapEntriesTest extends TestCase {
 
   /**
    * @param array $mapEntries a list of map entries
@@ -61,7 +60,7 @@ class MapEntriesTest extends PHPUnit_Framework_TestCase {
       array $expectedMapEntries, array $map) {
     $actualMapEntries =
         MapEntries::fromAssociativeArray($map, FakeMapEntry::class);
-    $this->assertSame(count($expectedMapEntries), count($actualMapEntries));
+    $this->assertCount(count($expectedMapEntries), $actualMapEntries);
 
     foreach ($actualMapEntries as $i => $actualMapEntry) {
       $this->assertSame(

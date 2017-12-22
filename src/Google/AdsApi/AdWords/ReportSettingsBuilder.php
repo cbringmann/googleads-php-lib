@@ -36,18 +36,23 @@ final class ReportSettingsBuilder implements AdsBuilder {
   private $isUseRawEnumValues;
   private $isIncludeZeroImpressions;
 
-  public function __construct() {
-    $this->configurationLoader = new ConfigurationLoader();
-  }
-
   /**
-   * @see AdsBuilder::fromFile()
+   * Create a report settings builder using the user-provided report settings if
+   * it's not null.
+   *
+   * @param null|ReportSettings $reportSettings the report settings to be used
+   *     as starting values.
    */
-  public function fromFile($path = null) {
-    if ($path === null) {
-      $path = self::DEFAULT_CONFIGURATION_FILENAME;
+  public function __construct(ReportSettings $reportSettings = null) {
+    $this->configurationLoader = new ConfigurationLoader();
+    if (!is_null($reportSettings)) {
+      $this->isSkipReportHeader = $reportSettings->isSkipReportHeader();
+      $this->isSkipColumnHeader = $reportSettings->isSkipColumnHeader();
+      $this->isSkipReportSummary = $reportSettings->isSkipReportSummary();
+      $this->isUseRawEnumValues = $reportSettings->isUseRawEnumValues();
+      $this->isIncludeZeroImpressions =
+          $reportSettings->isIncludeZeroImpressions();
     }
-    return $this->from($this->configurationLoader->fromFile($path));
   }
 
   /**
@@ -57,25 +62,30 @@ final class ReportSettingsBuilder implements AdsBuilder {
     $isSkipReportHeader = $configuration->getConfiguration(
         'isSkipReportHeader', 'ADWORDS_REPORTING');
     if ($isSkipReportHeader !== null) {
-      $this->isSkipReportHeader = boolval($isSkipReportHeader);
+      $this->isSkipReportHeader =
+          filter_var($isSkipReportHeader, FILTER_VALIDATE_BOOLEAN);
     }
 
     $isSkipColumnHeader = $configuration->getConfiguration(
         'isSkipColumnHeader', 'ADWORDS_REPORTING');
     if ($isSkipColumnHeader !== null) {
-      $this->isSkipColumnHeader = boolval($isSkipColumnHeader);
+      $this->isSkipColumnHeader =
+          filter_var($isSkipColumnHeader, FILTER_VALIDATE_BOOLEAN);
     }
 
     $isSkipReportSummary = $configuration->getConfiguration(
         'isSkipReportSummary', 'ADWORDS_REPORTING');
     if ($isSkipReportSummary !== null) {
-      $this->isSkipReportSummary = boolval($isSkipReportSummary);
+      $this->isSkipReportSummary =
+          filter_var($isSkipReportSummary, FILTER_VALIDATE_BOOLEAN);
     }
 
     $isUseRawEnumValues = $configuration->getConfiguration(
         'isUseRawEnumValues', 'ADWORDS_REPORTING');
     if ($isUseRawEnumValues !== null) {
-      $this->isUseRawEnumValues = boolval($isUseRawEnumValues);
+      $this->isUseRawEnumValues =
+          filter_var($isUseRawEnumValues, FILTER_VALIDATE_BOOLEAN);
+
     }
 
     return $this;

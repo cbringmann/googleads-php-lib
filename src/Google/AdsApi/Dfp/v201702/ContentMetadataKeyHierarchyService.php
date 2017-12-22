@@ -51,6 +51,7 @@ class ContentMetadataKeyHierarchyService extends \Google\AdsApi\Common\AdsSoapCl
       'SoapResponseHeader' => 'Google\\AdsApi\\Dfp\\v201702\\SoapResponseHeader',
       'Statement' => 'Google\\AdsApi\\Dfp\\v201702\\Statement',
       'StatementError' => 'Google\\AdsApi\\Dfp\\v201702\\StatementError',
+      'StringFormatError' => 'Google\\AdsApi\\Dfp\\v201702\\StringFormatError',
       'StringLengthError' => 'Google\\AdsApi\\Dfp\\v201702\\StringLengthError',
       'String_ValueMapEntry' => 'Google\\AdsApi\\Dfp\\v201702\\String_ValueMapEntry',
       'TextValue' => 'Google\\AdsApi\\Dfp\\v201702\\TextValue',
@@ -84,11 +85,12 @@ class ContentMetadataKeyHierarchyService extends \Google\AdsApi\Common\AdsSoapCl
     /**
      * Creates new {@link ContentMetadataKeyHierarchy} objects.
      *
-     * The following fields are required:
+     * <p>The following fields are required:
+     *
      * <ul>
-     * <li>{@link ContentMetadataKeyHierarchy#id}</li>
-     * <li>{@link ContentMetadataKeyHierarchy#name}</li>
-     * <li>{@link ContentMetadataKeyHierarchy#hierarchyLevels}</li>
+     * <li>{@link ContentMetadataKeyHierarchy#id}
+     * <li>{@link ContentMetadataKeyHierarchy#name}
+     * <li>{@link ContentMetadataKeyHierarchy#hierarchyLevels}
      * </ul>
      *
      * @param \Google\AdsApi\Dfp\v201702\ContentMetadataKeyHierarchy[] $contentMetadataKeyHierarchies
@@ -136,10 +138,8 @@ class ContentMetadataKeyHierarchyService extends \Google\AdsApi\Common\AdsSoapCl
     }
 
     /**
-     * Performs actions on {@link ContentMetadataKeyHierarchy} objects that match the given
-     * {@link Statement#query}.
-     *
-     * a set of hierarchies
+     * Performs actions on {@link ContentMetadataKeyHierarchy} objects that match the given {@link
+     * Statement#query}.
      *
      * @param \Google\AdsApi\Dfp\v201702\ContentMetadataKeyHierarchyAction $contentMetadataKeyHierarchyAction
      * @param \Google\AdsApi\Dfp\v201702\Statement $filterStatement

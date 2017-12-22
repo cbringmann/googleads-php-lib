@@ -16,7 +16,7 @@
  */
 namespace Google\AdsApi\Examples\AdWords\v201702\BasicOperations;
 
-require '../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
@@ -26,7 +26,6 @@ use Google\AdsApi\AdWords\v201702\cm\AdGroupAd;
 use Google\AdsApi\AdWords\v201702\cm\AdGroupAdOperation;
 use Google\AdsApi\AdWords\v201702\cm\AdGroupAdService;
 use Google\AdsApi\AdWords\v201702\cm\AdGroupAdStatus;
-use Google\AdsApi\AdWords\v201702\cm\AdType;
 use Google\AdsApi\AdWords\v201702\cm\Operator;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
 

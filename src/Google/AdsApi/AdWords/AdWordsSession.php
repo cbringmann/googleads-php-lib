@@ -16,6 +16,7 @@
  */
 namespace Google\AdsApi\AdWords;
 
+use Google\AdsApi\Common\AdsHeaderFormatter;
 use Google\AdsApi\Common\AdsSession;
 use Psr\Log\LoggerInterface;
 
@@ -28,10 +29,9 @@ final class AdWordsSession implements AdsSession {
   private $userAgent;
   private $endpoint;
   private $oAuth2Credential;
+  private $connectionSettings;
   private $soapSettings;
   private $clientCustomerId;
-  private $expressBusinessId;
-  private $expressPlusPageId;
   private $isValidateOnly;
   private $isPartialFailure;
   private $isIncludeUtilitiesInUserAgent;
@@ -39,6 +39,7 @@ final class AdWordsSession implements AdsSession {
   private $soapLogger;
   private $reportDownloaderLogger;
   private $batchJobsUtilLogger;
+  private $adsHeaderFormatter;
 
   /**
    * Creates an AdWords session from the specified builder.
@@ -54,12 +55,14 @@ final class AdWordsSession implements AdsSession {
     $this->userAgent = $builder->getUserAgent();
     $this->endpoint = $builder->getEndpoint();
     $this->oAuth2Credential = $builder->getOAuth2Credential();
+    $this->connectionSettings = $builder->getConnectionSettings();
     $this->soapSettings = $builder->getSoapSettings();
     $this->clientCustomerId = $builder->getClientCustomerId();
     $this->isValidateOnly = $builder->isValidateOnly();
     $this->isPartialFailure = $builder->isPartialFailure();
     $this->isIncludeUtilitiesInUserAgent =
         $builder->isIncludeUtilitiesInUserAgent();
+    $this->adsHeaderFormatter = $builder->getAdsHeaderFormatter();
     $this->reportSettings = $builder->getReportSettings();
     $this->soapLogger = $builder->getSoapLogger();
     $this->reportDownloaderLogger = $builder->getReportDownloaderLogger();
@@ -97,6 +100,13 @@ final class AdWordsSession implements AdsSession {
   }
 
   /**
+   * @see AdsSession::getConnectionSettings()
+   */
+  public function getConnectionSettings() {
+    return $this->connectionSettings;
+  }
+
+  /**
    * @see AdsSession::getSoapSettings()
    */
   public function getSoapSettings() {
@@ -109,42 +119,6 @@ final class AdWordsSession implements AdsSession {
    */
   public function getClientCustomerId() {
     return $this->clientCustomerId;
-  }
-
-  /**
-   * Gets the AdWords Express business ID used by the AdWords Express
-   * PromotionService.
-   * @return string|null
-   */
-  public function getExpressBusinessId() {
-    return $this->expressBusinessId;
-  }
-
-  /**
-   * Sets the AdWords Express business ID used by the AdWords Express
-   * PromotionService.
-   * @param string|null $expressBusinessId
-   */
-  public function setExpressBusinessId($expressBusinessId) {
-    $this->expressBusinessId = $expressBusinessId;
-  }
-
-  /**
-   * Gets the Google+ page ID for the Google My Business location used by the
-   * AdWords Express PromotionService.
-   * @return string|null
-   */
-  public function getExpressPlusPageId() {
-    return $this->expressPlusPageId;
-  }
-
-  /**
-   * Sets the Google+ page ID for the Google My Business location used by the
-   * AdWords Express PromotionService.
-   * @param string|null $expressPlusPageId
-   */
-  public function setExpressPlusPageId($expressPlusPageId) {
-    $this->expressPlusPageId = $expressPlusPageId;
   }
 
   /**
@@ -225,5 +199,13 @@ final class AdWordsSession implements AdsSession {
    */
   public function getBatchJobsUtilLogger() {
     return $this->batchJobsUtilLogger;
+  }
+
+  /**
+   * Gets the ads header formatter.
+   * @return AdsHeaderFormatter
+   */
+  public function getAdsHeaderFormatter() {
+    return $this->adsHeaderFormatter;
   }
 }
