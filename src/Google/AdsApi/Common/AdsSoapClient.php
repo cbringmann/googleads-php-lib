@@ -85,8 +85,8 @@ class AdsSoapClient extends SoapClient {
    *
    * @see SoapClient::__doRequest
    */
-  public function __doRequest(
-      $request, $location, $action, $version, $one_way = 0) {
+  public function __doRequest($request, $location, $action, $version, $one_way = 0)
+  {
     $request = SoapRequests::replaceReferences($request);
 
     // Read oAuth token
@@ -94,40 +94,46 @@ class AdsSoapClient extends SoapClient {
 
     // Build required header
     $header = [
-      'Content-type: text/xml;charset="utf-8"',
-      "Accept: text/xml",
-      "Cache-Control: no-cache",
-      "Pragma: no-cache",
-      "SOAPAction: " . $action ,
-      "Content-length: " . strlen($request),
-      "Authorization: " . $auth['Authorization']
+        'Content-type: text/xml;charset="utf-8"',
+        "Accept: text/xml",
+        "Cache-Control: no-cache",
+        "Pragma: no-cache",
+        "SOAPAction: " . $action ,
+        "Content-length: " . strlen($request),
+        "Authorization: " . $auth['Authorization']
     ];
 
     // Set required curl options
     $options = [
-      CURLOPT_RETURNTRANSFER  => true,
-      CURLOPT_HEADER          => true,
-      CURLOPT_FOLLOWLOCATION  => true,
-      CURLOPT_SSL_VERIFYHOST  => false,
-      CURLOPT_SSL_VERIFYPEER  => false,
-      CURLOPT_URL             => $location,
-      CURLOPT_POSTFIELDS      => $request,
-      CURLOPT_HTTPHEADER      => $header
+        CURLOPT_RETURNTRANSFER  => true,
+        CURLOPT_HEADER          => true,
+        CURLOPT_FOLLOWLOCATION  => true,
+        CURLOPT_SSL_VERIFYHOST  => false,
+        CURLOPT_SSL_VERIFYPEER  => false,
+        CURLOPT_URL             => $location,
+        CURLOPT_POSTFIELDS      => $request,
+        CURLOPT_HTTPHEADER      => $header
     ];
 
     // Init curl
     $soap_do = curl_init();
     curl_setopt_array($soap_do , $options);
 
+    $proxyString = '';
+
     // Add proxy settings for host
     if (\Hits\AdWords\Client::$proxyHost !== null && \Hits\AdWords\Client::$proxyHost !== '') {
-      curl_setopt($soap_do, CURLOPT_PROXY, \Hits\AdWords\Client::$proxyHost);
-      curl_setopt($soap_do, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+        curl_setopt($soap_do, CURLOPT_PROXY, \Hits\AdWords\Client::$proxyHost);
+        curl_setopt($soap_do, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5_HOSTNAME);
+
+        $proxyString .= 'socks5://' . \Hits\AdWords\Client::$proxyHost;
     }
 
     // Add proxy setting for proxy port
     if (\Hits\AdWords\Client::$proxyPort !== null && \Hits\AdWords\Client::$proxyPort !== '') {
-      curl_setopt($soap_do, CURLOPT_PROXYPORT, \Hits\AdWords\Client::$proxyPort);
+        curl_setopt($soap_do, CURLOPT_PROXYPORT, \Hits\AdWords\Client::$proxyPort);
+
+        $proxyString .= ':' . \Hits\AdWords\Client::$proxyPort;
     }
 
     // Execute query
@@ -135,7 +141,13 @@ class AdsSoapClient extends SoapClient {
     curl_close($soap_do);
 
     // Split Header and body
-    list($headers, $content) = explode("\r\n\r\n", $response, 2);
+    $explodedResponse = explode("\r\n\r\n", $response, 2);
+
+    if (count($explodedResponse) < 2) {
+        throw new \InvalidArgumentException('Returned adwords curl soap response for location: "' . $location . '" is not valid. Proxy: "' . $proxyString . '". Response: "' . $response . '"');
+    }
+
+    list($headers, $content) = $explodedResponse;
 
     // Set internal header cache
     $this->__last_response_headers = $headers;
