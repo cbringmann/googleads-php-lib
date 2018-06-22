@@ -1,3 +1,92 @@
+### 35.2.0
+
+##### AdWords
+
+*   Added support and examples for v201806.
+
+### 35.1.0
+
+##### DFP
+
+*   Added `ContentFilterError`, `ContentFilterErrorReason` for all versions.
+    These classes are for deserializing server errors.
+*   Added `UserConsentEligibility` and updated `LineItem`, `LineItemSummary`
+    for v201805 to make line items ineligible for non-personalized ad requests.
+
+### 35.0.0
+
+##### AdWords
+
+*   Added `QueryValidator` for v201802 to validate parts of an AWQL string.
+*   Added unit tests for `ServiceQueryBuilder`, `ReportQueryBuilder` and
+    supporting classes for v201802.
+*   Fixed
+    [issue #473](https://github.com/googleads/googleads-php-lib/issues/473).
+
+##### DFP
+
+*   Added `DaiAuthenticationKeyService` for creating, updating and retrieving
+    `DaiAuthenticationKey` objects.
+*   Added support and examples for v201805.
+*   Removed support for v201705.
+*   Removed examples for v201708.
+
+### 34.0.0
+
+##### AdWords
+
+*   Removed support and examples for v201705 and v201708. See deprecation
+    schedule at: https://developers.google.com/adwords/api/docs/sunset-dates
+*   Added `ServiceQueryBuilder` for v201802 to support
+    building AWQL strings for querying AdWords API services.
+*   Added `ReportQueryBuilder` for v201802 to support
+    building AWQL strings for downloading AdWords API reports.
+
+##### DFP
+
+*   Added new examples for managing user-team associations:
+    `CreateUserTeamAssociations`, `UpdateUserTeamAssociations`
+    and `DeleteUserTeamAssociations`.
+
+### 33.1.0
+
+##### AdWords
+
+*   Added support and examples for v201802.
+
+### 33.0.1
+
+##### Common
+
+*   Fixed
+    [issue #447](https://github.com/googleads/googleads-php-lib/issues/447).
+
+### 33.0.0
+
+##### AdWords
+
+*   Accepted [PR #429](https://github.com/googleads/googleads-php-lib/pull/429).
+*   Removed support and examples for v201702. See deprecation schedule at:
+    https://developers.google.com/adwords/api/docs/sunset-dates
+
+##### DFP
+
+*   Accepted [PR #438](https://github.com/googleads/googleads-php-lib/pull/438).
+*   Added support and examples for v201802.
+*   Removed support for v201702.
+*   Removed examples for v201705.
+
+##### Common
+
+*   Fixed [issue
+    #194](https://github.com/googleads/googleads-php-lib/issues/194).
+*   Accepted [PR #396](https://github.com/googleads/googleads-php-lib/pull/396).
+*   Accepted [PR #415](https://github.com/googleads/googleads-php-lib/pull/415).
+*   Accepted [PR #421](https://github.com/googleads/googleads-php-lib/pull/421).
+*   Accepted [PR #422](https://github.com/googleads/googleads-php-lib/pull/422).
+*   Fixed
+    [issue #426](https://github.com/googleads/googleads-php-lib/issues/426).
+
 ### 32.1.0
 
 ##### DFP

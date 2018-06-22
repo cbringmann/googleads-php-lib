@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated file, do not edit -->
-<!-- Copyright 2017 Google Inc. All Rights Reserved -->
+<!-- Copyright 2018 Google Inc. All Rights Reserved -->
 <wsdl:definitions
   targetNamespace="https://adwords.google.com/api/adwords/cm/v201710"
   xmlns:tns="https://adwords.google.com/api/adwords/cm/v201710"
@@ -861,7 +861,8 @@
                 &lt;p&gt;Starting with v201705, this field cannot be set at the ad group or ad group criterion level
                 to any value other than {@code BiddingStrategyType.NONE}.
                 &lt;span class="constraint Selectable"&gt;This field can be selected using the value "BiddingStrategyType".&lt;/span&gt;&lt;span class="constraint Filterable"&gt;This field can be filtered on.&lt;/span&gt;
-                &lt;span class="constraint CampaignType"&gt;This field may only be set to NONE for campaign channel type SHOPPING with ad group type SHOPPING_SHOWCASE_ADS.&lt;/span&gt;
+                &lt;span class="constraint CampaignType"&gt;This field may only be set to the values: MANUAL_CPC, PAGE_ONE_PROMOTED, TARGET_SPEND, ENHANCED_CPC, TARGET_CPA, TARGET_ROAS, MAXIMIZE_CONVERSIONS, TARGET_OUTRANK_SHARE, NONE for campaign channel type SEARCH.&lt;/span&gt;
+&lt;span class="constraint CampaignType"&gt;This field may only be set to NONE for campaign channel type SHOPPING with ad group type SHOPPING_SHOWCASE_ADS.&lt;/span&gt;
 &lt;span class="constraint CampaignType"&gt;This field may only be set to the values: MANUAL_CPC, ENHANCED_CPC, TARGET_ROAS, TARGET_SPEND, NONE for campaign channel type SHOPPING.&lt;/span&gt;
 &lt;span class="constraint CampaignType"&gt;This field may only be set to NONE for campaign channel type DISPLAY.&lt;/span&gt;
 &lt;span class="constraint CampaignType"&gt;This field may only be set to NONE for campaign channel type DISPLAY with campaign channel subtype DISPLAY_MOBILE_APP.&lt;/span&gt;
@@ -2456,7 +2457,7 @@
         <annotation>
           <documentation>
             An {@code adwords grouping} string. Not supported by campaigns of
-            {@link AdvertisingChannelType#SHOPPING}.
+            {@link AdvertisingChannelType#SHOPPING} so is only used in {@link ProductScope}s.
           </documentation>
         </annotation>
         <complexContent>
@@ -2477,7 +2478,7 @@
         <annotation>
           <documentation>
             An {@code adwords labels} string. Not supported by campaigns of
-            {@link AdvertisingChannelType#SHOPPING}.
+            {@link AdvertisingChannelType#SHOPPING} so is only used in {@link ProductScope}s.
           </documentation>
         </annotation>
         <complexContent>
@@ -2599,7 +2600,7 @@
         <annotation>
           <documentation>
             A plain condition string. Not supported by campaigns of
-            {@link AdvertisingChannelType#SHOPPING}.
+            {@link AdvertisingChannelType#SHOPPING} so is only used in {@link ProductScope}s.
           </documentation>
         </annotation>
         <complexContent>
@@ -2774,7 +2775,8 @@
             
             &lt;pre&gt;{@code "Home &amp; Garden &gt; Kitchen &amp; Dining &gt; Kitchen Appliances &gt; Refrigerators"}&lt;/pre&gt;
             
-            &lt;p&gt;Not supported by campaigns of {@link AdvertisingChannelType#SHOPPING}.
+            &lt;p&gt;Not supported by campaigns of {@link AdvertisingChannelType#SHOPPING} so is only used in
+            {@link ProductScope}s.
           </documentation>
         </annotation>
         <complexContent>
@@ -4404,7 +4406,7 @@
       <simpleType name="AuthorizationError.Reason">
         <annotation>
           <documentation>
-            The reasons for the database error.
+            The reasons for the authorization error.
           </documentation>
         </annotation>
         <restriction base="xsd:string">

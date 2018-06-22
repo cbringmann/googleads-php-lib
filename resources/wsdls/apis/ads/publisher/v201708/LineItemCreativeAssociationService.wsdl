@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated file, do not edit -->
-<!-- Copyright 2017 Google Inc. All Rights Reserved -->
+<!-- Copyright 2018 Google Inc. All Rights Reserved -->
 <wsdl:definitions
   targetNamespace="https://www.google.com/apis/ads/publisher/v201708"
   xmlns:tns="https://www.google.com/apis/ads/publisher/v201708"
@@ -3178,7 +3178,7 @@
           <enumeration value="SYSTEM_ERROR">
             <annotation>
               <documentation>
-                A system error occured, please try again.
+                A system error occurred, please try again.
               </documentation>
             </annotation>
           </enumeration>
@@ -4979,6 +4979,9 @@
       Each LICA has a start and end date and time that defines when the creative
       should be displayed.
       &lt;/p&gt;
+      &lt;p&gt;
+      To read more about associating creatives with line items, see this
+      &lt;a href="https://support.google.com/dfp_premium/answer/3187916"&gt;DFP Help Center&lt;/a&gt; article.
     </wsdl:documentation>
     <wsdl:operation name="createLineItemCreativeAssociations">
       <wsdl:documentation>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated file, do not edit -->
-<!-- Copyright 2017 Google Inc. All Rights Reserved -->
+<!-- Copyright 2018 Google Inc. All Rights Reserved -->
 <wsdl:definitions
   targetNamespace="https://www.google.com/apis/ads/publisher/v201708"
   xmlns:tns="https://www.google.com/apis/ads/publisher/v201708"
@@ -1108,8 +1108,9 @@
                 name="logicalOperator" type="tns:CustomCriteriaSet.LogicalOperator">
                 <annotation>
                   <documentation>
-                    The logical operator to be applied to {@link CustomCriteriaSet#children}.
-                    This attribute is required.
+                    The logical operator to be applied to {@link CustomCriteriaSet#children}. This attribute is
+                    required.
+                    &lt;span class="constraint Required"&gt;This attribute is required.&lt;/span&gt;
                   </documentation>
                 </annotation>
               </element>
@@ -2538,6 +2539,10 @@
             <annotation>
               <documentation>
                 Indicates the line item type of a {@code LineItem}. This attribute is required.
+                
+                The line item type determines the default priority of the line item. More information can be
+                found on the &lt;a href="https://support.google.com/dfp_premium/answer/177279"&gt;
+                DFP Help Center&lt;/a&gt;.
               </documentation>
             </annotation>
           </element>
@@ -3516,7 +3521,7 @@
             <annotation>
               <documentation>
                 The target of the forecast. If {@link LineItem#id} is null or no line item exists with that ID,
-                then a forecast is computed for the the subject, predicting what would happen if it were added
+                then a forecast is computed for the subject, predicting what would happen if it were added
                 to the network. If a line item already exists with {@link LineItem#id}, the forecast is
                 computed for the subject, predicting what would happen if the existing line item's settings
                 were modified to match the subject.
@@ -6839,8 +6844,9 @@
           <enumeration value="INVALID_AGE_RANGE">
             <annotation>
               <documentation>
-                Age range for GRP audience is not valid. Please see
-                https://support.google.com/dfp_premium/answer/6337075 for more information.
+                Age range for GRP audience is not valid. Please see the
+                &lt;a href="https://support.google.com/dfp_premium/answer/6135438"&gt;DFP Help Center&lt;/a&gt; for more
+                information.
               </documentation>
             </annotation>
           </enumeration>
@@ -7150,7 +7156,7 @@
           <enumeration value="SYSTEM_ERROR">
             <annotation>
               <documentation>
-                A system error occured, please try again.
+                A system error occurred, please try again.
               </documentation>
             </annotation>
           </enumeration>
@@ -10286,16 +10292,15 @@
   </wsdl:message>
   <wsdl:portType name="ForecastServiceInterface">
     <wsdl:documentation>
-      Provides methods for estimating traffic (clicks/impressions) for line items.
-      Forecasts can be provided for {@link LineItem} objects that exist in the
-      system or which have not had an ID set yet.
+      Provides methods for estimating traffic (clicks/impressions) for line items. Forecasts can be
+      provided for {@link LineItem} objects that exist in the system or which have not had an ID set
+      yet.
       
       &lt;h4&gt;Test network behavior&lt;/h4&gt;
       
-      &lt;p&gt;Test networks are unable to provide forecasts that would be
-      comparable to the production environment because forecasts require traffic
-      history. For test networks, a consistent behavior can be expected
-      for forecast requests, according to the following rules:
+      &lt;p&gt;Test networks are unable to provide forecasts that would be comparable to the production
+      environment because forecasts require traffic history. For test networks, a consistent behavior
+      can be expected for forecast requests, according to the following rules:
       
       &lt;table&gt;
       &lt;tr&gt;

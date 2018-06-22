@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated file, do not edit -->
-<!-- Copyright 2017 Google Inc. All Rights Reserved -->
+<!-- Copyright 2018 Google Inc. All Rights Reserved -->
 <wsdl:definitions
   targetNamespace="https://www.google.com/apis/ads/publisher/v201711"
   xmlns:tns="https://www.google.com/apis/ads/publisher/v201711"
@@ -992,8 +992,9 @@
                 name="logicalOperator" type="tns:CustomCriteriaSet.LogicalOperator">
                 <annotation>
                   <documentation>
-                    The logical operator to be applied to {@link CustomCriteriaSet#children}.
-                    This attribute is required.
+                    The logical operator to be applied to {@link CustomCriteriaSet#children}. This attribute is
+                    required.
+                    &lt;span class="constraint Required"&gt;This attribute is required.&lt;/span&gt;
                   </documentation>
                 </annotation>
               </element>

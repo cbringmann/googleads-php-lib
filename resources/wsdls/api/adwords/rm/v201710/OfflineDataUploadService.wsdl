@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated file, do not edit -->
-<!-- Copyright 2017 Google Inc. All Rights Reserved -->
+<!-- Copyright 2018 Google Inc. All Rights Reserved -->
 <wsdl:definitions
   targetNamespace="https://adwords.google.com/api/adwords/rm/v201710"
   xmlns:tns="https://adwords.google.com/api/adwords/rm/v201710"
@@ -11,6 +11,105 @@
       targetNamespace="https://adwords.google.com/api/adwords/cm/v201710"
       xmlns="http://www.w3.org/2001/XMLSchema"
       xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:tns="https://adwords.google.com/api/adwords/cm/v201710">
+      <complexType abstract="true" name="ApiError">
+        <annotation>
+          <documentation>
+            The API error base class that provides details about an error that occurred
+            while processing a service request.
+            
+            &lt;p&gt;The OGNL field path is provided for parsers to identify the request data
+            element that may have caused the error.&lt;/p&gt;
+          </documentation>
+        </annotation>
+        <sequence>
+          <element maxOccurs="1" minOccurs="0" name="fieldPath" type="xsd:string">
+            <annotation>
+              <documentation>
+                The OGNL field path to identify cause of error.
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="unbounded" minOccurs="0"
+            name="fieldPathElements" type="tns:FieldPathElement">
+            <annotation>
+              <documentation>
+                A parsed copy of the field path. For example, the field path "operations[1].operand"
+                corresponds to this list: {FieldPathElement(field = "operations", index = 1),
+                FieldPathElement(field = "operand", index = null)}.
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="1" minOccurs="0" name="trigger" type="xsd:string">
+            <annotation>
+              <documentation>
+                The data that caused the error.
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="1" minOccurs="0" name="errorString" type="xsd:string">
+            <annotation>
+              <documentation>
+                A simple string representation of the error and reason.
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="1" minOccurs="0" name="ApiError.Type" type="xsd:string">
+            <annotation>
+              <documentation>
+                Indicates that this instance is a subtype of ApiError.
+                Although this field is returned in the response, it is ignored on input
+                and cannot be selected. Specify xsi:type instead.
+              </documentation>
+            </annotation>
+          </element>
+        </sequence>
+      </complexType>
+      <complexType name="ApiException">
+        <annotation>
+          <documentation>
+            Exception class for holding a list of service errors.
+          </documentation>
+        </annotation>
+        <complexContent>
+          <extension base="tns:ApplicationException">
+            <sequence>
+              <element maxOccurs="unbounded" minOccurs="0" name="errors" type="tns:ApiError">
+                <annotation>
+                  <documentation>
+                    List of errors.
+                  </documentation>
+                </annotation>
+              </element>
+            </sequence>
+          </extension>
+        </complexContent>
+      </complexType>
+      <complexType name="ApplicationException">
+        <annotation>
+          <documentation>
+            Base class for exceptions.
+          </documentation>
+        </annotation>
+        <sequence>
+          <element maxOccurs="1" minOccurs="0" name="message" type="xsd:string">
+            <annotation>
+              <documentation>
+                Error message.
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="1" minOccurs="0"
+            name="ApplicationException.Type" type="xsd:string">
+            <annotation>
+              <documentation>
+                Indicates that this instance is a subtype of ApplicationException.
+                Although this field is returned in the response, it is ignored on input
+                and cannot be selected. Specify xsi:type instead.
+              </documentation>
+            </annotation>
+          </element>
+        </sequence>
+      </complexType>
       <complexType name="AuthenticationError">
         <annotation>
           <documentation>
@@ -41,6 +140,66 @@
           <extension base="tns:ApiError">
             <sequence>
               <element maxOccurs="1" minOccurs="0" name="reason" type="tns:AuthorizationError.Reason">
+                <annotation>
+                  <documentation>
+                    The error reason represented by an enum.
+                  </documentation>
+                </annotation>
+              </element>
+            </sequence>
+          </extension>
+        </complexContent>
+      </complexType>
+      <complexType name="CollectionSizeError">
+        <annotation>
+          <documentation>
+            Errors associated with the size of the given collection being
+            out of bounds.
+          </documentation>
+        </annotation>
+        <complexContent>
+          <extension base="tns:ApiError">
+            <sequence>
+              <element maxOccurs="1" minOccurs="0" name="reason" type="tns:CollectionSizeError.Reason">
+                <annotation>
+                  <documentation>
+                    The error reason represented by an enum.
+                  </documentation>
+                </annotation>
+              </element>
+            </sequence>
+          </extension>
+        </complexContent>
+      </complexType>
+      <complexType abstract="true" name="ComparableValue">
+        <annotation>
+          <documentation>
+            Comparable types for constructing ranges with.
+          </documentation>
+        </annotation>
+        <sequence>
+          <element maxOccurs="1" minOccurs="0"
+            name="ComparableValue.Type" type="xsd:string">
+            <annotation>
+              <documentation>
+                Indicates that this instance is a subtype of ComparableValue.
+                Although this field is returned in the response, it is ignored on input
+                and cannot be selected. Specify xsi:type instead.
+              </documentation>
+            </annotation>
+          </element>
+        </sequence>
+      </complexType>
+      <complexType name="DatabaseError">
+        <annotation>
+          <documentation>
+            Errors that are thrown due to a database access problem.
+          </documentation>
+        </annotation>
+        <complexContent>
+          <extension base="tns:ApiError">
+            <sequence>
+              <element maxOccurs="1" minOccurs="0" name="reason" type="tns:DatabaseError.Reason">
                 <annotation>
                   <documentation>
                     The error reason represented by an enum.
@@ -221,6 +380,25 @@
           </extension>
         </complexContent>
       </complexType>
+      <complexType abstract="true" name="ListReturnValue">
+        <annotation>
+          <documentation>
+            Base list return value type.
+          </documentation>
+        </annotation>
+        <sequence>
+          <element maxOccurs="1" minOccurs="0"
+            name="ListReturnValue.Type" type="xsd:string">
+            <annotation>
+              <documentation>
+                Indicates that this instance is a subtype of ListReturnValue.
+                Although this field is returned in the response, it is ignored on input
+                and cannot be selected. Specify xsi:type instead.
+              </documentation>
+            </annotation>
+          </element>
+        </sequence>
+      </complexType>
       <complexType name="LongValue">
         <annotation>
           <documentation>
@@ -333,6 +511,33 @@
           </extension>
         </complexContent>
       </complexType>
+      <complexType abstract="true" name="Operation">
+        <annotation>
+          <documentation>
+            This represents an operation that includes an operator and an operand
+            specified type.
+          </documentation>
+        </annotation>
+        <sequence>
+          <element maxOccurs="1" minOccurs="0" name="operator" type="tns:Operator">
+            <annotation>
+              <documentation>
+                Operator.
+                &lt;span class="constraint Required"&gt;This field is required and should not be {@code null}.&lt;/span&gt;
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="1" minOccurs="0" name="Operation.Type" type="xsd:string">
+            <annotation>
+              <documentation>
+                Indicates that this instance is a subtype of Operation.
+                Although this field is returned in the response, it is ignored on input
+                and cannot be selected. Specify xsi:type instead.
+              </documentation>
+            </annotation>
+          </element>
+        </sequence>
+      </complexType>
       <complexType name="OperationAccessDenied">
         <annotation>
           <documentation>
@@ -386,6 +591,31 @@
             <annotation>
               <documentation>
                 The order to sort the results on. The default sort order is {@link SortOrder#ASCENDING}.
+              </documentation>
+            </annotation>
+          </element>
+        </sequence>
+      </complexType>
+      <complexType abstract="true" name="Page">
+        <annotation>
+          <documentation>
+            Contains the results from a get call.
+          </documentation>
+        </annotation>
+        <sequence>
+          <element maxOccurs="1" minOccurs="0" name="totalNumEntries" type="xsd:int">
+            <annotation>
+              <documentation>
+                Total number of entries in the result that this page is a part of.
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="1" minOccurs="0" name="Page.Type" type="xsd:string">
+            <annotation>
+              <documentation>
+                Indicates that this instance is a subtype of Page.
+                Although this field is returned in the response, it is ignored on input
+                and cannot be selected. Specify xsi:type instead.
               </documentation>
             </annotation>
           </element>
@@ -614,6 +844,64 @@
           </extension>
         </complexContent>
       </complexType>
+      <complexType name="Selector">
+        <annotation>
+          <documentation>
+            A generic selector to specify the type of information to return.
+          </documentation>
+        </annotation>
+        <sequence>
+          <element maxOccurs="unbounded" minOccurs="0" name="fields" type="xsd:string">
+            <annotation>
+              <documentation>
+                List of fields to select.
+                &lt;a href="/adwords/api/docs/appendix/selectorfields"&gt;Possible values&lt;/a&gt;
+                are marked {@code Selectable} on the entity's reference page.
+                For example, for the {@code CampaignService} selector, refer to the
+                selectable fields from the {@link Campaign} reference page.
+                &lt;span class="constraint ContentsDistinct"&gt;This field must contain distinct elements.&lt;/span&gt;
+                &lt;span class="constraint ContentsNotNull"&gt;This field must not contain {@code null} elements.&lt;/span&gt;
+                &lt;span class="constraint Required"&gt;This field is required and should not be {@code null}.&lt;/span&gt;
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="unbounded" minOccurs="0" name="predicates" type="tns:Predicate">
+            <annotation>
+              <documentation>
+                Specifies how an entity (eg. adgroup, campaign, criterion, ad) should be filtered.
+                &lt;span class="constraint ContentsNotNull"&gt;This field must not contain {@code null} elements.&lt;/span&gt;
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="1" minOccurs="0" name="dateRange" type="tns:DateRange">
+            <annotation>
+              <documentation>
+                Range of dates for which you want to include data. If this value is omitted,
+                results for all dates are returned.
+                &lt;p class="note"&gt;&lt;b&gt;Note:&lt;/b&gt; This field is only used by the report download
+                service. For all other services, it is ignored.&lt;/p&gt;
+                &lt;span class="constraint DateRangeWithinRange"&gt;This range must be contained within the range [19700101, 20380101].&lt;/span&gt;
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="unbounded" minOccurs="0" name="ordering" type="tns:OrderBy">
+            <annotation>
+              <documentation>
+                The fields on which you want to sort, and the sort order. The order in the list is
+                significant: The first element in the list indicates the primary sort order, the next
+                specifies the secondary sort order and so on.
+              </documentation>
+            </annotation>
+          </element>
+          <element maxOccurs="1" minOccurs="0" name="paging" type="tns:Paging">
+            <annotation>
+              <documentation>
+                Pagination information.
+              </documentation>
+            </annotation>
+          </element>
+        </sequence>
+      </complexType>
       <complexType name="SelectorError">
         <annotation>
           <documentation>
@@ -788,273 +1076,6 @@
           </extension>
         </complexContent>
       </complexType>
-      <complexType abstract="true" name="ComparableValue">
-        <annotation>
-          <documentation>
-            Comparable types for constructing ranges with.
-          </documentation>
-        </annotation>
-        <sequence>
-          <element maxOccurs="1" minOccurs="0"
-            name="ComparableValue.Type" type="xsd:string">
-            <annotation>
-              <documentation>
-                Indicates that this instance is a subtype of ComparableValue.
-                Although this field is returned in the response, it is ignored on input
-                and cannot be selected. Specify xsi:type instead.
-              </documentation>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-      <complexType name="DatabaseError">
-        <annotation>
-          <documentation>
-            Errors that are thrown due to a database access problem.
-          </documentation>
-        </annotation>
-        <complexContent>
-          <extension base="tns:ApiError">
-            <sequence>
-              <element maxOccurs="1" minOccurs="0" name="reason" type="tns:DatabaseError.Reason">
-                <annotation>
-                  <documentation>
-                    The error reason represented by an enum.
-                  </documentation>
-                </annotation>
-              </element>
-            </sequence>
-          </extension>
-        </complexContent>
-      </complexType>
-      <complexType abstract="true" name="ApiError">
-        <annotation>
-          <documentation>
-            The API error base class that provides details about an error that occurred
-            while processing a service request.
-            
-            &lt;p&gt;The OGNL field path is provided for parsers to identify the request data
-            element that may have caused the error.&lt;/p&gt;
-          </documentation>
-        </annotation>
-        <sequence>
-          <element maxOccurs="1" minOccurs="0" name="fieldPath" type="xsd:string">
-            <annotation>
-              <documentation>
-                The OGNL field path to identify cause of error.
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="unbounded" minOccurs="0"
-            name="fieldPathElements" type="tns:FieldPathElement">
-            <annotation>
-              <documentation>
-                A parsed copy of the field path. For example, the field path "operations[1].operand"
-                corresponds to this list: {FieldPathElement(field = "operations", index = 1),
-                FieldPathElement(field = "operand", index = null)}.
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="1" minOccurs="0" name="trigger" type="xsd:string">
-            <annotation>
-              <documentation>
-                The data that caused the error.
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="1" minOccurs="0" name="errorString" type="xsd:string">
-            <annotation>
-              <documentation>
-                A simple string representation of the error and reason.
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="1" minOccurs="0" name="ApiError.Type" type="xsd:string">
-            <annotation>
-              <documentation>
-                Indicates that this instance is a subtype of ApiError.
-                Although this field is returned in the response, it is ignored on input
-                and cannot be selected. Specify xsi:type instead.
-              </documentation>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-      <complexType name="ApiException">
-        <annotation>
-          <documentation>
-            Exception class for holding a list of service errors.
-          </documentation>
-        </annotation>
-        <complexContent>
-          <extension base="tns:ApplicationException">
-            <sequence>
-              <element maxOccurs="unbounded" minOccurs="0" name="errors" type="tns:ApiError">
-                <annotation>
-                  <documentation>
-                    List of errors.
-                  </documentation>
-                </annotation>
-              </element>
-            </sequence>
-          </extension>
-        </complexContent>
-      </complexType>
-      <complexType name="ApplicationException">
-        <annotation>
-          <documentation>
-            Base class for exceptions.
-          </documentation>
-        </annotation>
-        <sequence>
-          <element maxOccurs="1" minOccurs="0" name="message" type="xsd:string">
-            <annotation>
-              <documentation>
-                Error message.
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="1" minOccurs="0"
-            name="ApplicationException.Type" type="xsd:string">
-            <annotation>
-              <documentation>
-                Indicates that this instance is a subtype of ApplicationException.
-                Although this field is returned in the response, it is ignored on input
-                and cannot be selected. Specify xsi:type instead.
-              </documentation>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-      <complexType name="Selector">
-        <annotation>
-          <documentation>
-            A generic selector to specify the type of information to return.
-          </documentation>
-        </annotation>
-        <sequence>
-          <element maxOccurs="unbounded" minOccurs="0" name="fields" type="xsd:string">
-            <annotation>
-              <documentation>
-                List of fields to select.
-                &lt;a href="/adwords/api/docs/appendix/selectorfields"&gt;Possible values&lt;/a&gt;
-                are marked {@code Selectable} on the entity's reference page.
-                For example, for the {@code CampaignService} selector, refer to the
-                selectable fields from the {@link Campaign} reference page.
-                &lt;span class="constraint ContentsDistinct"&gt;This field must contain distinct elements.&lt;/span&gt;
-                &lt;span class="constraint ContentsNotNull"&gt;This field must not contain {@code null} elements.&lt;/span&gt;
-                &lt;span class="constraint Required"&gt;This field is required and should not be {@code null}.&lt;/span&gt;
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="unbounded" minOccurs="0" name="predicates" type="tns:Predicate">
-            <annotation>
-              <documentation>
-                Specifies how an entity (eg. adgroup, campaign, criterion, ad) should be filtered.
-                &lt;span class="constraint ContentsNotNull"&gt;This field must not contain {@code null} elements.&lt;/span&gt;
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="1" minOccurs="0" name="dateRange" type="tns:DateRange">
-            <annotation>
-              <documentation>
-                Range of dates for which you want to include data. If this value is omitted,
-                results for all dates are returned.
-                &lt;p class="note"&gt;&lt;b&gt;Note:&lt;/b&gt; This field is only used by the report download
-                service. For all other services, it is ignored.&lt;/p&gt;
-                &lt;span class="constraint DateRangeWithinRange"&gt;This range must be contained within the range [19700101, 20380101].&lt;/span&gt;
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="unbounded" minOccurs="0" name="ordering" type="tns:OrderBy">
-            <annotation>
-              <documentation>
-                The fields on which you want to sort, and the sort order. The order in the list is
-                significant: The first element in the list indicates the primary sort order, the next
-                specifies the secondary sort order and so on.
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="1" minOccurs="0" name="paging" type="tns:Paging">
-            <annotation>
-              <documentation>
-                Pagination information.
-              </documentation>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-      <complexType abstract="true" name="ListReturnValue">
-        <annotation>
-          <documentation>
-            Base list return value type.
-          </documentation>
-        </annotation>
-        <sequence>
-          <element maxOccurs="1" minOccurs="0"
-            name="ListReturnValue.Type" type="xsd:string">
-            <annotation>
-              <documentation>
-                Indicates that this instance is a subtype of ListReturnValue.
-                Although this field is returned in the response, it is ignored on input
-                and cannot be selected. Specify xsi:type instead.
-              </documentation>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-      <complexType abstract="true" name="Operation">
-        <annotation>
-          <documentation>
-            This represents an operation that includes an operator and an operand
-            specified type.
-          </documentation>
-        </annotation>
-        <sequence>
-          <element maxOccurs="1" minOccurs="0" name="operator" type="tns:Operator">
-            <annotation>
-              <documentation>
-                Operator.
-                &lt;span class="constraint Required"&gt;This field is required and should not be {@code null}.&lt;/span&gt;
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="1" minOccurs="0" name="Operation.Type" type="xsd:string">
-            <annotation>
-              <documentation>
-                Indicates that this instance is a subtype of Operation.
-                Although this field is returned in the response, it is ignored on input
-                and cannot be selected. Specify xsi:type instead.
-              </documentation>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-      <complexType abstract="true" name="Page">
-        <annotation>
-          <documentation>
-            Contains the results from a get call.
-          </documentation>
-        </annotation>
-        <sequence>
-          <element maxOccurs="1" minOccurs="0" name="totalNumEntries" type="xsd:int">
-            <annotation>
-              <documentation>
-                Total number of entries in the result that this page is a part of.
-              </documentation>
-            </annotation>
-          </element>
-          <element maxOccurs="1" minOccurs="0" name="Page.Type" type="xsd:string">
-            <annotation>
-              <documentation>
-                Indicates that this instance is a subtype of Page.
-                Although this field is returned in the response, it is ignored on input
-                and cannot be selected. Specify xsi:type instead.
-              </documentation>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
       <simpleType name="AuthenticationError.Reason">
         <annotation>
           <documentation>
@@ -1216,7 +1237,7 @@
       <simpleType name="AuthorizationError.Reason">
         <annotation>
           <documentation>
-            The reasons for the database error.
+            The reasons for the authorization error.
           </documentation>
         </annotation>
         <restriction base="xsd:string">
@@ -1269,6 +1290,17 @@
               </documentation>
             </annotation>
           </enumeration>
+        </restriction>
+      </simpleType>
+      <simpleType name="CollectionSizeError.Reason">
+        <annotation>
+          <documentation>
+            The reasons for the target error.
+          </documentation>
+        </annotation>
+        <restriction base="xsd:string">
+          <enumeration value="TOO_FEW"/>
+          <enumeration value="TOO_MANY"/>
         </restriction>
       </simpleType>
       <simpleType name="DatabaseError.Reason">
@@ -2201,27 +2233,6 @@
           <jaxb:globalBindings typesafeEnumMaxMembers="999999"/>
         </appinfo>
       </annotation>
-      <complexType name="CollectionSizeError">
-        <annotation>
-          <documentation>
-            Errors associated with the size of the given collection being
-            out of bounds.
-          </documentation>
-        </annotation>
-        <complexContent>
-          <extension base="cm:ApiError">
-            <sequence>
-              <element maxOccurs="1" minOccurs="0" name="reason" type="tns:CollectionSizeError.Reason">
-                <annotation>
-                  <documentation>
-                    The error reason represented by an enum.
-                  </documentation>
-                </annotation>
-              </element>
-            </sequence>
-          </extension>
-        </complexContent>
-      </complexType>
       <complexType name="CurrencyCodeError">
         <annotation>
           <documentation>
@@ -2338,7 +2349,7 @@
             name="offlineDataList" type="tns:OfflineData">
             <annotation>
               <documentation>
-                List of offline data in this upload. For Web API, each offlineDataList can have at most 50
+                List of offline data in this upload. For AdWords API, each offlineDataList can have at most 50
                 OfflineData.
                 &lt;span class="constraint Required"&gt;This field is required and should not be {@code null} when it is contained within {@link Operator}s : ADD.&lt;/span&gt;
               </documentation>
@@ -2350,7 +2361,6 @@
               <documentation>
                 List of errors if any in offlineDataList for mutate. Errors will be in the same order of {@code
                 #offlineDataList} with null for valid data.
-                &lt;span class="constraint ReadOnly"&gt;This field is read only and will be ignored when sent to the API.&lt;/span&gt;
               </documentation>
             </annotation>
           </element>
@@ -2430,8 +2440,12 @@
                 name="partialFailureErrors" type="cm:ApiError">
                 <annotation>
                   <documentation>
-                    List of partial operation failure errors. Used for upload level failures. List Element will be
-                    null if no error is reported for that operation.
+                    In v201710 and previous, this field stores a list of operation level errors. Starting in
+                    v201802, this field stores both operation-level and row-level errors. For row-level errors,
+                    offlineDataList will be shown in the fieldPath along with row index. In this case, the
+                    operation will be processed and just the rows with errors will not be used. For more
+                    information about partial failure, see:
+                    https://developers.google.com/adwords/api/docs/guides/partial-failure
                   </documentation>
                 </annotation>
               </element>
@@ -2466,7 +2480,7 @@
           <element maxOccurs="1" minOccurs="0" name="transactionAmount" type="tns:MoneyWithCurrency">
             <annotation>
               <documentation>
-                Transaction amount.
+                Transaction amount. We support the ISO 4217 3-character currency code. For example: USD, EUR.
                 &lt;span class="constraint Required"&gt;This field is required and should not be {@code null}.&lt;/span&gt;
               </documentation>
             </annotation>
@@ -2491,7 +2505,9 @@
           <element maxOccurs="1" minOccurs="0" name="loyaltyRate" type="xsd:double">
             <annotation>
               <documentation>
-                The fraction of store transactions that are loyalty transactions. Range (0.0 to 1.0]
+                This is the fraction of all transactions that are identifiable (i.e., associated with any form
+                of customer information).
+                The fraction needs to be between 0 and 1 (excluding 0).
                 &lt;span class="constraint Required"&gt;This field is required and should not be {@code null}.&lt;/span&gt;
               </documentation>
             </annotation>
@@ -2500,7 +2516,10 @@
             name="transactionUploadRate" type="xsd:double">
             <annotation>
               <documentation>
-                The fraction of loyalty transactions that are uploaded. Range (0.0 to 1.0]
+                This is the ratio of sales you?re uploading compared to the overall sales that you can
+                associate with a customer. The fraction needs to be between 0 and 1. For example, if you upload
+                half the sales that you are able to associate with a customer, your Transaction Upload Rate
+                would be 0.5 (excluding 0).
                 &lt;span class="constraint Required"&gt;This field is required and should not be {@code null}.&lt;/span&gt;
               </documentation>
             </annotation>
@@ -2521,6 +2540,8 @@
         <annotation>
           <documentation>
             Metadata for a Third party Store Sales upload.
+            Note: This is a whitelisted only product. Please contact your Google business development
+            representative for details on upload configuration.
           </documentation>
         </annotation>
         <complexContent>
@@ -2569,7 +2590,7 @@
                 name="bridgeMapVersionId" type="xsd:string">
                 <annotation>
                   <documentation>
-                    Indicates the version of the bridge map.
+                    Indicates the version of partnerIds to be used for uploads.
                     &lt;span class="constraint Required"&gt;This field is required and should not be {@code null}.&lt;/span&gt;
                   </documentation>
                 </annotation>
@@ -2577,7 +2598,7 @@
               <element maxOccurs="1" minOccurs="0" name="partnerId" type="xsd:int">
                 <annotation>
                   <documentation>
-                    The id of the third party uploading the transaction feed.
+                    The ID of the third party partner uploading the transaction feed.
                     &lt;span class="constraint Required"&gt;This field is required and should not be {@code null}.&lt;/span&gt;
                   </documentation>
                 </annotation>
@@ -2622,17 +2643,6 @@
           </element>
         </sequence>
       </complexType>
-      <simpleType name="CollectionSizeError.Reason">
-        <annotation>
-          <documentation>
-            The reasons for the target error.
-          </documentation>
-        </annotation>
-        <restriction base="xsd:string">
-          <enumeration value="TOO_FEW"/>
-          <enumeration value="TOO_MANY"/>
-        </restriction>
-      </simpleType>
       <simpleType name="CurrencyCodeError.Reason">
         <annotation>
           <documentation>
@@ -2921,7 +2931,7 @@
           <enumeration value="COUNTRY_CODE">
             <annotation>
               <documentation>
-                Indicates the country.
+                ISO two-letter country codes.
               </documentation>
             </annotation>
           </enumeration>
@@ -2982,7 +2992,7 @@
             
             &lt;p&gt;Set - updates the upload result for each upload. It is for internal use only.
             
-            &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt; For Web API, one ADD request can have at most 2000 operations.
+            &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt; For AdWords API, one ADD request can have at most 2000 operations.
             
             &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt; Add operation might possibly succeed even with errors in {@code OfflineData}.
             Data errors are reported in {@link OfflineDataUpload#partialDataErrors}
@@ -3072,7 +3082,7 @@
         
         &lt;p&gt;Set - updates the upload result for each upload. It is for internal use only.
         
-        &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt; For Web API, one ADD request can have at most 2000 operations.
+        &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt; For AdWords API, one ADD request can have at most 2000 operations.
         
         &lt;p&gt;&lt;b&gt;Note:&lt;/b&gt; Add operation might possibly succeed even with errors in {@code OfflineData}.
         Data errors are reported in {@link OfflineDataUpload#partialDataErrors}

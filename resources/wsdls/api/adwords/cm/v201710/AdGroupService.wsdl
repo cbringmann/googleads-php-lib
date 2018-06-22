@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated file, do not edit -->
-<!-- Copyright 2017 Google Inc. All Rights Reserved -->
+<!-- Copyright 2018 Google Inc. All Rights Reserved -->
 <wsdl:definitions
   targetNamespace="https://adwords.google.com/api/adwords/cm/v201710"
   xmlns:tns="https://adwords.google.com/api/adwords/cm/v201710"
@@ -142,7 +142,7 @@
                 ID of the base adgroup from which this draft/trial adgroup was created. For
                 base adgroups this is equal to the adgroup ID.  If the adgroup was created
                 in the draft or trial and has no corresponding base adgroup, this field is null.
-                This field is readonly and only returned on get requests.
+                This field is readonly and will be ignored when sent to the API.
                 &lt;span class="constraint Selectable"&gt;This field can be selected using the value "BaseAdGroupId".&lt;/span&gt;
               </documentation>
             </annotation>
@@ -638,7 +638,8 @@
                 &lt;p&gt;Starting with v201705, this field cannot be set at the ad group or ad group criterion level
                 to any value other than {@code BiddingStrategyType.NONE}.
                 &lt;span class="constraint Selectable"&gt;This field can be selected using the value "BiddingStrategyType".&lt;/span&gt;&lt;span class="constraint Filterable"&gt;This field can be filtered on.&lt;/span&gt;
-                &lt;span class="constraint CampaignType"&gt;This field may only be set to the values: MANUAL_CPC, ENHANCED_CPC, NONE for campaign channel type SHOPPING with ad group type SHOPPING_SHOWCASE_ADS.&lt;/span&gt;
+                &lt;span class="constraint CampaignType"&gt;This field may only be set to the values: MANUAL_CPC, PAGE_ONE_PROMOTED, TARGET_SPEND, ENHANCED_CPC, TARGET_CPA, TARGET_ROAS, MAXIMIZE_CONVERSIONS, TARGET_OUTRANK_SHARE, NONE for campaign channel type SEARCH.&lt;/span&gt;
+&lt;span class="constraint CampaignType"&gt;This field may only be set to the values: MANUAL_CPC, ENHANCED_CPC, NONE for campaign channel type SHOPPING with ad group type SHOPPING_SHOWCASE_ADS.&lt;/span&gt;
 &lt;span class="constraint CampaignType"&gt;This field may only be set to the values: MANUAL_CPC, ENHANCED_CPC, TARGET_ROAS, TARGET_SPEND, NONE for campaign channel type SHOPPING.&lt;/span&gt;
 &lt;span class="constraint CampaignType"&gt;This field may only be set to the values: MANUAL_CPC, ENHANCED_CPC, TARGET_ROAS, TARGET_SPEND, TARGET_CPA, NONE, MAXIMIZE_CONVERSIONS for campaign channel type DISPLAY.&lt;/span&gt;
 &lt;span class="constraint CampaignType"&gt;This field may only be set to NONE for campaign channel type DISPLAY with campaign channel subtype DISPLAY_MOBILE_APP.&lt;/span&gt;
@@ -2916,7 +2917,7 @@
       <simpleType name="AuthorizationError.Reason">
         <annotation>
           <documentation>
-            The reasons for the database error.
+            The reasons for the authorization error.
           </documentation>
         </annotation>
         <restriction base="xsd:string">

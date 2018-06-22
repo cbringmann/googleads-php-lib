@@ -39,9 +39,9 @@ This library determines the home directory of your computer by using
 [`EnvironmentalVariables::getHome()`](https://github.com/googleads/googleads-php-lib/blob/master/src/Google/AdsApi/Common/Util/EnvironmentalVariables.php#L34).
 
 *   [AdWords
-     adsapi_php.ini](https://github.com/googleads/googleads-php-lib/blob/master/examples/AdWords/adsapi_php.ini)
+    adsapi_php.ini](https://github.com/googleads/googleads-php-lib/blob/master/examples/AdWords/adsapi_php.ini)
 *   [DFP
-     adsapi_php.ini](https://github.com/googleads/googleads-php-lib/blob/master/examples/Dfp/adsapi_php.ini)
+    adsapi_php.ini](https://github.com/googleads/googleads-php-lib/blob/master/examples/Dfp/adsapi_php.ini)
 
 ### Downloading this library
 
@@ -173,10 +173,10 @@ pattern is similar for DFP.
 ```php
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSessionBuilder;
-use Google\AdsApi\AdWords\v201705\cm\CampaignService;
-use Google\AdsApi\AdWords\v201705\cm\OrderBy;
-use Google\AdsApi\AdWords\v201705\cm\Paging;
-use Google\AdsApi\AdWords\v201705\cm\Selector;
+use Google\AdsApi\AdWords\v201802\cm\CampaignService;
+use Google\AdsApi\AdWords\v201802\cm\OrderBy;
+use Google\AdsApi\AdWords\v201802\cm\Paging;
+use Google\AdsApi\AdWords\v201802\cm\Selector;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
 
 $oAuth2Credential = (new OAuth2TokenBuilder())
@@ -297,6 +297,16 @@ $session = (new AdWordsSessionBuilder())
     ->build();
 ```
 
+### Utilities
+
+We provide some utilities in this client library for helping you use features
+in the AdWords and DFP API more conveniently. Check out the following wikis for
+details:
+
+*   [BatchJobs for AdWords](//github.com/googleads/googleads-php-lib/wiki/BatchJobs-for-AdWords)
+*   [ProductPartitions for AdWords](//github.com/googleads/googleads-php-lib/wiki/ProductPartitions-for-AdWords)
+*   [ReportDownloader Utilities](//github.com/googleads/googleads-php-lib/wiki/ReportDownloader-Utilities)
+
 ### Reporting
 
 When downloading reports, you can set additional [stream context
@@ -345,9 +355,12 @@ To remedy, see [Steps for troubleshooting CA file issues](https://github.com/goo
 
 ### Documentation
 
-> PHPDoc is not yet available for the new ads API PHP library. Follow the
-> [PHPDoc issue](https://github.com/googleads/googleads-php-lib/issues/194) for
-> updates.
+PHPDoc for this library can be found in the
+[gh-pages](https://github.com/googleads/googleads-php-lib/tree/gh-pages) branch
+of this repository and can be viewed at:
+
+* [AdWords](http://googleads.github.io/googleads-php-lib/AdWords/)
+* [DFP](http://googleads.github.io/googleads-php-lib/Dfp/)
 
 General AdWords and DFP API documentation can be found on our Google Developers
 site:
@@ -355,6 +368,22 @@ site:
 *   [AdWords API documentation](https://developers.google.com/adwords/api)
 *   [DFP API
     documentation](https://developers.google.com/doubleclick-publishers)
+
+### Coding Style
+
+We use PSR-2 as a coding style standard. Assuming that you're at the root
+directory of your project, to check for coding style violations,
+run
+
+```
+vendor/bin/phpcs src --standard=phpcs_ruleset.xml -np
+```
+
+To automatically fix (fixable) coding style violations, run
+
+```
+vendor/bin/phpcbf src --standard=phpcs_ruleset.xml
+```
 
 ### Getting support
 

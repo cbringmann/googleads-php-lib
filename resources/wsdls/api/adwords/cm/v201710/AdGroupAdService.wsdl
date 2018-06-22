@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated file, do not edit -->
-<!-- Copyright 2017 Google Inc. All Rights Reserved -->
+<!-- Copyright 2018 Google Inc. All Rights Reserved -->
 <wsdl:definitions
   targetNamespace="https://adwords.google.com/api/adwords/cm/v201710"
   xmlns:tns="https://adwords.google.com/api/adwords/cm/v201710"
@@ -19,10 +19,8 @@
       <complexType name="Ad">
         <annotation>
           <documentation>
-            The base class of all ad types. {@code Ad} objects themselves cannot be modified. If you want to
-            make a change to an {@code Ad} object, you must REMOVE its AdGroupAd and ADD a new AdGroupAd with
-            the new {@code Ad}. This will result in a new {@code Ad} ID, so stats for the original {@code Ad}
-            and the new {@code Ad} will appear under separate IDs in reports.
+            The base class of all ad types. {@code Ad}s are created using the {@code AdGroupAdService}.
+            Some ad types such as {@code ExpandedTextAd}s may be modified using the {@code AdService}.
             
             &lt;p&gt;When calling {@code AdGroupAdService} to update the {@code status} of an {@code AdGroupAd},
             you can construct an {@code Ad} object (instead of the {@code Ad}'s concrete type) with the
@@ -984,7 +982,9 @@
       <complexType name="CountryConstraint">
         <annotation>
           <documentation>
-            Information about countries that were targeted that caused a policy finding.
+            Information about countries that were targeted that caused a policy finding. If a
+            CountryConstraint has 0 targeted countries and an empty list of constrained countries, it means
+            that the constraint applies globally.
           </documentation>
         </annotation>
         <complexContent>
@@ -1811,7 +1811,7 @@
             <annotation>
               <documentation>
                 Type of media object. Required when using {@link MediaService#upload} to upload a new media
-                file.
+                file. MEDIA_BUNDLE, ICON, IMAGE, and DYNAMIC_IMAGE are the supported MediaTypes to upload.
                 &lt;span class="constraint Selectable"&gt;This field can be selected using the value "Type".&lt;/span&gt;
                 &lt;span class="constraint ReadOnly"&gt;This field is read only and will be ignored when sent to the API for the following {@link Operator}s: REMOVE and SET.&lt;/span&gt;
               </documentation>
@@ -5169,7 +5169,7 @@
       <simpleType name="AuthorizationError.Reason">
         <annotation>
           <documentation>
-            The reasons for the database error.
+            The reasons for the authorization error.
           </documentation>
         </annotation>
         <restriction base="xsd:string">
