@@ -69,7 +69,7 @@ final class AdsGuzzleHttpClientFactory implements GuzzleHttpClientFactory
         $config = $this->config;
         if (!array_key_exists('handler', $config)
             || $config['handler'] === null) {
-            $config['handler'] = HandlerStack::create();
+            $config['handler'] = HandlerStack::create(Proxy::wrapSync(new CurlMultiHandler(), new CurlHandler()));
         }
 
         // Add a logging middleware required by this library.
