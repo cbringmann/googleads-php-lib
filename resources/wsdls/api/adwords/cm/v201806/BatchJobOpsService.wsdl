@@ -101,7 +101,6 @@
                 URL template for appending params to Final URL.
                 
                 &lt;p&gt;On update, empty string ("") indicates to clear the field.
-                &lt;p&gt;This field is supported only in test accounts.
               </documentation>
             </annotation>
           </element>
@@ -358,6 +357,7 @@
                 URL template for constructing a tracking URL.
                 
                 &lt;p&gt;On update, empty string ("") indicates to clear the field.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set for campaign channel type MULTI_CHANNEL.&lt;/span&gt;
               </documentation>
             </annotation>
           </element>
@@ -367,7 +367,7 @@
                 URL template for appending params to Final URL.
                 
                 &lt;p&gt;On update, empty string ("") indicates to clear the field.
-                &lt;p&gt;This field is supported only in test accounts.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set for campaign channel type MULTI_CHANNEL.&lt;/span&gt;
               </documentation>
             </annotation>
           </element>
@@ -377,6 +377,7 @@
               <documentation>
                 A list of mappings to be used for substituting URL custom parameter tags in the
                 trackingUrlTemplate, finalUrls, and/or finalMobileUrls.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set for campaign channel type MULTI_CHANNEL.&lt;/span&gt;
               </documentation>
             </annotation>
           </element>
@@ -606,6 +607,7 @@
                     The list of policy topic IDs that should not cause a PolicyFindingError to be reported. If the
                     up front policy check produces a policy summary containing PROHIBITED or FULLY_LIMITED policy
                     topic entries of these types, the reviewable entities will be saved without reporting an error.
+                    The reviewable entities will not be eligible to serve until they pass the policy check.
                     
                     &lt;p&gt;This field accepts returned policyTopicId from PolicyTopicEntry in the PolicyFindingError.
                   </documentation>
@@ -662,7 +664,14 @@
           </documentation>
         </annotation>
         <sequence>
-          <element maxOccurs="1" minOccurs="0" name="adRotationMode" type="tns:AdRotationMode"/>
+          <element maxOccurs="1" minOccurs="0" name="adRotationMode" type="tns:AdRotationMode">
+            <annotation>
+              <documentation>
+                &lt;span class="constraint CampaignType"&gt;This field may only be set to OPTIMIZE for campaign channel subtype UNIVERSAL_APP_CAMPAIGN.&lt;/span&gt;
+&lt;span class="constraint CampaignType"&gt;This field may only be set to the values: OPTIMIZE, ROTATE_FOREVER.&lt;/span&gt;
+              </documentation>
+            </annotation>
+          </element>
         </sequence>
       </complexType>
       <complexType name="AdGroupBidModifier">
@@ -2002,7 +2011,6 @@
                     URL template for appending params to Final URL.
                     
                     &lt;p&gt;On update, empty string ("") indicates to clear the field.
-                    &lt;p&gt;This field is supported only in test accounts.
                   </documentation>
                 </annotation>
               </element>
@@ -2714,7 +2722,7 @@
                 URL template for appending params to Final URL.
                 
                 &lt;p&gt;On update, empty string ("") indicates to clear the field.
-                &lt;p&gt;This field is supported only in test accounts.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set for campaign channel type MULTI_CHANNEL.&lt;/span&gt;
               </documentation>
             </annotation>
           </element>
@@ -4590,6 +4598,7 @@
             <annotation>
               <documentation>
                 Geo targeting restriction specifies the type of location that can be used for targeting.
+                Only applies if the feed item has a location FeedItemTarget.
                 On update, if the field is left unspecified, the previous geo targeting restriction state
                 will not be changed.
                 On update, if the field is set with a null GeoRestriction enum, the geo targeting restriction
@@ -7577,8 +7586,9 @@
       <complexType name="PolicyFindingError">
         <annotation>
           <documentation>
-            Error indicating that a reviewable was not saved because it contained a policy summary with
-            a PROHIBITED or FULLY_LIMITED policy topic entry.
+            Error indicating that an entity will be disapproved unless changes are made to it before it is
+            saved. This error occurs when the entity will have a policy summary that includes a PROHIBITED
+            policy topic entry.
           </documentation>
         </annotation>
         <complexContent>
@@ -9540,9 +9550,8 @@
                 <annotation>
                   <documentation>
                     Sales country of products to include in the campaign.
-                    This must be set to 'ZZ' for Campaigns of types other than
-                    {@link AdvertisingChannelType#SHOPPING}
-                    &lt;span class="constraint Required"&gt;This field is required and should not be {@code null} when it is contained within {@link Operator}s : ADD.&lt;/span&gt;
+                    This field is required for Shopping campaigns. This field will default to 'ZZ' (and is the only
+                    permitted value) for campaigns of type other than {@link AdvertisingChannelType#SHOPPING}.
                   </documentation>
                 </annotation>
               </element>
@@ -9551,10 +9560,9 @@
                 <annotation>
                   <documentation>
                     Priority of the campaign. Campaigns with numerically higher priorities take precedence over
-                    those with lower priorities.
-                    &lt;span class="constraint CampaignType"&gt;This field may only be set to 3 for campaign channel type SHOPPING with campaign channel subtype SHOPPING_GOAL_OPTIMIZED_ADS.&lt;/span&gt;
+                    those with lower priorities. This field is required and should not be null. This field is not
+                    required for Smart Shopping campaigns.
                     &lt;span class="constraint InRange"&gt;This field must be between 0 and 2, inclusive.&lt;/span&gt;
-                    &lt;span class="constraint Required"&gt;This field is required and should not be {@code null} when it is contained within {@link Operator}s : ADD.&lt;/span&gt;
                   </documentation>
                 </annotation>
               </element>
@@ -10438,17 +10446,16 @@
       <complexType name="GoalOptimizedShoppingAd">
         <annotation>
           <documentation>
-            Represents a goal-optimized Shopping ad (known as Shopping ad (goal-optimized) in the AdWords
-            user interface). A goal-optimized Shopping ad targets multiple advertising channels across
-            Search, Google Display Network, and YouTube with a focus on retail. This supports ads that
-            display product data (managed using the Google Merchant Center) as specified in the parent
-            campaign's {@linkplain ShoppingSetting Shopping setting} as well as ads using advertiser provided
-            asset data.
+            Represents a Smart Shopping ad that optimizes towards your goals. A Smart Shopping ad targets
+            multiple advertising channels across Search, Google Display Network, and YouTube with a focus on
+            retail. This supports ads that display product data (managed using the Google Merchant Center) as
+            specified in the parent campaign's {@linkplain ShoppingSetting Shopping setting} as well as ads
+            using advertiser provided asset data.
             
-            &lt;p class="caution"&gt;&lt;b&gt;Caution:&lt;/b&gt; goal-optimized Shopping ads do not use {@link #url url},
-            {@link #finalUrls finalUrls}, {@link #finalMobileUrls finalMobileUrls},
-            {@link #finalAppUrls finalAppUrls}, or {@link #displayUrl displayUrl};
-            setting these fields on a goal-optimized Shopping ad will cause an error.
+            &lt;p class="caution"&gt;&lt;b&gt;Caution:&lt;/b&gt; Smart Shopping ads do not use {@link #url url}, {@link
+            #finalUrls finalUrls}, {@link #finalMobileUrls finalMobileUrls}, {@link #finalAppUrls
+            finalAppUrls}, or {@link #displayUrl displayUrl}; setting these fields on a Smart Shopping ad
+            will cause an error.
             &lt;span class="constraint AdxEnabled"&gt;This is enabled for AdX.&lt;/span&gt;
           </documentation>
         </annotation>
@@ -10661,11 +10668,46 @@
       <complexType name="ResponsiveSearchAd">
         <annotation>
           <documentation>
-            Represents a responsive search ad
+            Represents a responsive search ad.
+            
+            &lt;p&gt;&lt;strong&gt;Important&lt;/strong&gt;&lt;/p&gt;
+            
+            &lt;p&gt;
+            &lt;ul&gt;
+            &lt;li&gt;Responsive search ads are in beta and may not be available to all AdWords advertisers.&lt;/li&gt;
+            &lt;li&gt;Per the &lt;a href="https://support.google.com/adwordspolicy/answer/54818"&gt;AdWords Terms &amp;amp;
+            Conditions&lt;/a&gt; for features in beta, you may not disclose any non-public information.&lt;/li&gt;
+            &lt;li&gt;Responsive search ads will learn and improve over time, so make sure to regularly monitor the
+            performance and status of your ads.&lt;/li&gt;
+            &lt;li&gt;Responsive search ads are currently available in English, French, German, Spanish,
+            Portuguese, Italian, Swedish, Dutch, Russian, Japanese, Polish, Turkish, Danish, and
+            Norwegian, with other languages on the way.&lt;/li&gt;
+            &lt;li&gt;Assets can be shown in any order, so make sure that they make sense individually or in
+            combination, and don’t violate our policies or local law.&lt;/li&gt;
+            &lt;li&gt;Even after ads are assembled, they may not serve.&lt;/li&gt;
+            &lt;li&gt;If you have text that should appear in every ad, then you must pin it to either Headline
+            position 1, Headline position 2, or Description position 1, and also make sure it is less
+            than 80 characters long.&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;/p&gt;
+            
+            &lt;p&gt;To increase the likelihood that your ad shows, be sure to provide at least 5 distinct
+            headlines and 2 distinct descriptions that don't repeat the same or similar phrases. Providing
+            redundant content will restrict the system's ability to assemble combinations.
+            &lt;a href="https://support.google.com/adwords/answer/9023565"&gt;See example ads&lt;/a&gt;&lt;/p&gt;
+            
+            &lt;p&gt;Help center documentation
+            &lt;ul&gt;
+            &lt;li&gt;&lt;a href="https://support.google.com/adwords/answer/7684791"&gt;About responsive search
+            ads&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="https://support.google.com/adwords/answer/9023565"&gt;Create a responsive search ad
+            (see examples)&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;/p&gt;
             
             &lt;p class="caution"&gt;&lt;b&gt;Caution:&lt;/b&gt; Responsive search ads do not use {@link #url url}, {@link
             #displayUrl displayUrl}, {@link #finalAppUrls finalAppUrls}, or {@link #devicePreference
-            devicePreference}; setting these fields on a responsive search ad will cause an error.
+            devicePreference}; setting these fields on a responsive search ad will cause an error.&lt;/p&gt;
             &lt;span class="constraint AdxEnabled"&gt;This is enabled for AdX.&lt;/span&gt;
           </documentation>
         </annotation>
@@ -12777,7 +12819,7 @@
           <enumeration value="SHOPPING_GOAL_OPTIMIZED_ADS">
             <annotation>
               <documentation>
-                Ad group type for goal-optimized Shopping Campaigns.
+                Ad group type for Smart Shopping Campaigns.
               </documentation>
             </annotation>
           </enumeration>
@@ -14742,6 +14784,7 @@
                 &lt;p class="note"&gt;&lt;b&gt;Note:&lt;/b&gt; Starting with v201710, this label is deprecated and can only be
                 removed from campaigns - it can no longer be added. A future release will remove this label
                 entirely.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set.&lt;/span&gt;
               </documentation>
             </annotation>
           </enumeration>
@@ -14760,6 +14803,7 @@
                 &lt;p class="note"&gt;&lt;b&gt;Note:&lt;/b&gt; Starting with v201710, this label is deprecated and can only be
                 removed from campaigns - it can no longer be added. A future release will remove this label
                 entirely. Please use the {@code TRAGEDY} label instead of this one going forward.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set.&lt;/span&gt;
               </documentation>
             </annotation>
           </enumeration>
@@ -14806,6 +14850,7 @@
                 &lt;p class="note"&gt;&lt;b&gt;Note:&lt;/b&gt; Starting with v201710, this label is deprecated and can only be
                 removed from campaigns - it can no longer be added. A future release will remove this label
                 entirely.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set.&lt;/span&gt;
               </documentation>
             </annotation>
           </enumeration>
@@ -14817,6 +14862,7 @@
                 &lt;p class="note"&gt;&lt;b&gt;Note:&lt;/b&gt; Starting with v201710, this label is deprecated and can only be
                 removed from campaigns - it can no longer be added. A future release will remove this label
                 entirely.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set.&lt;/span&gt;
               </documentation>
             </annotation>
           </enumeration>
@@ -14828,6 +14874,7 @@
                 &lt;p class="note"&gt;&lt;b&gt;Note:&lt;/b&gt; Starting with v201710, this label is deprecated and can only be
                 removed from campaigns - it can no longer be added. A future release will remove this label
                 entirely.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set.&lt;/span&gt;
               </documentation>
             </annotation>
           </enumeration>
@@ -14839,6 +14886,7 @@
                 &lt;p class="note"&gt;&lt;b&gt;Note:&lt;/b&gt; Starting with v201710, this label is deprecated and can only be
                 removed from campaigns - it can no longer be added. A future release will remove this label
                 entirely.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set.&lt;/span&gt;
               </documentation>
             </annotation>
           </enumeration>
@@ -14850,6 +14898,7 @@
                 &lt;p class="note"&gt;&lt;b&gt;Note:&lt;/b&gt; Starting with v201710, this label is deprecated and can only be
                 removed from campaigns - it can no longer be added. A future release will remove this label
                 entirely. Please use the {@code TRAGEDY} label instead of this one going forward.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set.&lt;/span&gt;
               </documentation>
             </annotation>
           </enumeration>
@@ -14917,6 +14966,7 @@
                 &lt;p class="note"&gt;&lt;b&gt;Note:&lt;/b&gt; Starting with v201710, this label is deprecated and can only be
                 removed from campaigns - it can no longer be added. A future release will remove this label
                 entirely.
+                &lt;span class="constraint CampaignType"&gt;This field may not be set.&lt;/span&gt;
               </documentation>
             </annotation>
           </enumeration>
@@ -22175,8 +22225,8 @@
             <annotation>
               <documentation>
                 Operand denoting a webpage URL targeting condition.
-                The operator {@link StringConditionOperator#CONTAINS} will be used for
-                such conditions.
+                Operators {@link WebpageConditionOperator#CONTAINS} and {@link WebpageConditionOperator#EQUALS}
+                are supported for such conditions.
               </documentation>
             </annotation>
           </enumeration>
@@ -22184,7 +22234,7 @@
             <annotation>
               <documentation>
                 Operand denoting a webpage category targeting condition.
-                The operator {@link StringConditionOperator#EQUALS} will be used for
+                The operator {@link WebpageConditionOperator#EQUALS} will be used for
                 such conditions.
               </documentation>
             </annotation>
@@ -22193,7 +22243,7 @@
             <annotation>
               <documentation>
                 Operand denoting a webpage title targeting condition.
-                The operator {@link StringConditionOperator#CONTAINS} will be used for
+                The operator {@link WebpageConditionOperator#CONTAINS} will be used for
                 such conditions.
               </documentation>
             </annotation>
@@ -22202,7 +22252,7 @@
             <annotation>
               <documentation>
                 Operand denoting a webpage content targeting condition.
-                The operator {@link StringConditionOperator#CONTAINS} will be used for
+                The operator {@link WebpageConditionOperator#CONTAINS} will be used for
                 such conditions.
               </documentation>
             </annotation>
@@ -22211,7 +22261,7 @@
             <annotation>
               <documentation>
                 Operand denoting a webpage custom label targeting condition.&lt;br&gt;
-                The operator {@link StringConditionOperator#EQUALS} will be used for such conditions.
+                The operator {@link WebpageConditionOperator#EQUALS} will be used for such conditions.
               </documentation>
             </annotation>
           </enumeration>

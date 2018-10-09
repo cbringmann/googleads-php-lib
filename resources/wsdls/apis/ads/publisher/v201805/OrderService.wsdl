@@ -23,8 +23,8 @@
             &lt;p&gt;
             &lt;b&gt;This object is experimental!
             &lt;code&gt;ObjectValue&lt;/code&gt; is an experimental, innovative, and rapidly
-            changing new feature for DFP. Unfortunately, being on the bleeding edge means that we may make
-            backwards-incompatible changes to
+            changing new feature for Ad Manager. Unfortunately, being on the bleeding edge means that
+            we may make backwards-incompatible changes to
             &lt;code&gt;ObjectValue&lt;/code&gt;. We will inform the community when this feature
             is no longer experimental.&lt;/b&gt;
           </documentation>
@@ -161,7 +161,7 @@
             The action used for approving and overbooking {@link Order} objects. All {@link LineItem} objects
             within the order will be approved as well. For more information on what happens to an order and
             its line items when it is approved and overbooked, see the
-            &lt;a href="https://support.google.com/dfp_premium/answer/177334"&gt;DFP Help Center&lt;/a&gt;.
+            &lt;a href="https://support.google.com/dfp_premium/answer/177334"&gt;Ad Manager Help Center&lt;/a&gt;.
           </documentation>
         </annotation>
         <complexContent>
@@ -176,7 +176,7 @@
             The action used for approving {@link Order} objects. All {@link LineItem}
             objects within the order will be approved as well. For more information on what happens to an
             order and its line items when it is approved, see the
-            &lt;a href="https://support.google.com/dfp_premium/answer/177334"&gt;DFP Help Center&lt;/a&gt;.
+            &lt;a href="https://support.google.com/dfp_premium/answer/177334"&gt;Ad Manager Help Center&lt;/a&gt;.
             &lt;/p&gt;
           </documentation>
         </annotation>
@@ -1907,11 +1907,10 @@
             An example of such a query might be {@code "WHERE id = :idValue"}.
             &lt;/p&gt;
             &lt;p&gt;
-            Statements also support use of the LIKE keyword. This provides partial and
-            wildcard string matching.
+            Statements also support use of the LIKE keyword. This provides wildcard string matching.
             &lt;/p&gt;
             &lt;p&gt;
-            An example of such a query might be {@code "WHERE name LIKE 'startswith%'"}.
+            An example of such a query might be {@code "WHERE name LIKE '%searchString%'"}.
             &lt;/p&gt;
             The value for the variable idValue must then be set with an object of type
             {@link Value}, e.g., {@link NumberValue}, {@link TextValue} or
@@ -3179,7 +3178,7 @@
           <enumeration value="VALUE_MATCH_TYPE_NOT_ALLOWED">
             <annotation>
               <documentation>
-                Only DFP Premium networks can have {@link CustomTargetingValue#matchType}
+                Only Ad Manager 360 networks can have {@link CustomTargetingValue#matchType}
                 other than {@link CustomTargetingValue.MatchType#EXACT}.
               </documentation>
             </annotation>
@@ -3836,8 +3835,8 @@
             <annotation>
               <documentation>
                 Age range for GRP audience is not valid. Please see the
-                &lt;a href="https://support.google.com/dfp_premium/answer/6135438"&gt;DFP Help Center&lt;/a&gt; for more
-                information.
+                &lt;a href="https://support.google.com/dfp_premium/answer/6135438"&gt;Ad Manager Help Center&lt;/a&gt;
+                for more information.
               </documentation>
             </annotation>
           </enumeration>
@@ -4725,7 +4724,7 @@
           <enumeration value="COMPANION_DELIVERY_OPTION_REQUIRE_PREMIUM">
             <annotation>
               <documentation>
-                Companion delivery options require premium networks.
+                Companion delivery options require Ad Manager 360 networks.
               </documentation>
             </annotation>
           </enumeration>
@@ -4741,7 +4740,7 @@
               <documentation>
                 The line item priority is invalid if for dynamic allocation line items
                 it is different than the default for free publishers.  When allowed,
-                Premium publishers can change the priority to any value.
+                Ad Manager 360 users can change the priority to any value.
               </documentation>
             </annotation>
           </enumeration>
@@ -5607,8 +5606,8 @@
                 about 5 seconds and then retry the request. Note that this does not
                 guarantee the request will succeed. If it fails again, try increasing the
                 wait time.
-                &lt;p&gt;Another way to mitigate this error is to limit requests to 2 per second for
-                Small Business networks, or 8 per second for Premium networks. Once again
+                &lt;p&gt;Another way to mitigate this error is to limit requests to 8 per second for Ad Manager
+                360 accounts, or 2 per second for Ad Manager accounts. Once again
                 this does not guarantee that every request will succeed, but may help
                 reduce the number of times you receive this error.
               </documentation>
@@ -5862,9 +5861,8 @@
           <enumeration value="NETWORK_REMNANT_ORDER_CANNOT_UPDATE_LINEITEM_TYPE">
             <annotation>
               <documentation>
-                Remnant line items from the Google Ad Manager cannot be changed to other
-                line item types once delivery begins. This restriction does not apply
-                for new line items created in Doubleclick For Publishers.
+                Network remnant line items cannot be changed to other line item types once delivery begins.
+                This restriction does not apply to any new line items created in Ad Manager.
               </documentation>
             </annotation>
           </enumeration>
@@ -6199,8 +6197,8 @@
             <annotation>
               <documentation>
                 When a set-top box line item is pushed to Canoe, a revision number is used to keep track of
-                the last version of the line item that DFP synced with Canoe. The only changes allowed on
-                revisions within DFP is increasing the revision number.
+                the last version of the line item that Ad Manager synced with Canoe. The only change
+                allowed on revisions within Ad Manager is increasing the revision number.
               </documentation>
             </annotation>
           </enumeration>
@@ -6208,8 +6206,8 @@
             <annotation>
               <documentation>
                 When a set-top box line item is pushed to Canoe, a revision number is used to keep track of
-                the last version of the line item that DFP synced with Canoe. Sync revisions begin at one and
-                can only increase in value.
+                the last version of the line item that Ad Manager synced with Canoe. Sync revisions begin
+                at one and can only increase in value.
               </documentation>
             </annotation>
           </enumeration>

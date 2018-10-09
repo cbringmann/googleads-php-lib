@@ -23,8 +23,8 @@
             &lt;p&gt;
             &lt;b&gt;This object is experimental!
             &lt;code&gt;ObjectValue&lt;/code&gt; is an experimental, innovative, and rapidly
-            changing new feature for DFP. Unfortunately, being on the bleeding edge means that we may make
-            backwards-incompatible changes to
+            changing new feature for Ad Manager. Unfortunately, being on the bleeding edge means that
+            we may make backwards-incompatible changes to
             &lt;code&gt;ObjectValue&lt;/code&gt;. We will inform the community when this feature
             is no longer experimental.&lt;/b&gt;
           </documentation>
@@ -814,7 +814,7 @@
             <annotation>
               <documentation>
                 Overrides the value set for {@link LineItem#startDateTime}. This value is
-                optional and is only valid for DFP premium networks.
+                optional and is only valid for Ad Manager 360 networks.
               </documentation>
             </annotation>
           </element>
@@ -832,7 +832,7 @@
             <annotation>
               <documentation>
                 Overrides {@link LineItem#endDateTime}. This value is optional and is only
-                valid for DFP premium networks.
+                valid for Ad Manager 360 networks.
               </documentation>
             </annotation>
           </element>
@@ -841,7 +841,7 @@
               <documentation>
                 Overrides the value set for
                 {@link HasDestinationUrlCreative#destinationUrl}. This value is optional
-                and is only valid for DFP premium networks.
+                and is only valid for Ad Manager 360 networks.
               </documentation>
             </annotation>
           </element>
@@ -1306,7 +1306,7 @@
       <complexType name="RichMediaStudioCreativeError">
         <annotation>
           <documentation>
-            Lists all errors associated with Rich Media Studio creatives.
+            Lists all errors associated with Studio creatives.
           </documentation>
         </annotation>
         <complexContent>
@@ -1461,11 +1461,10 @@
             An example of such a query might be {@code "WHERE id = :idValue"}.
             &lt;/p&gt;
             &lt;p&gt;
-            Statements also support use of the LIKE keyword. This provides partial and
-            wildcard string matching.
+            Statements also support use of the LIKE keyword. This provides wildcard string matching.
             &lt;/p&gt;
             &lt;p&gt;
-            An example of such a query might be {@code "WHERE name LIKE 'startswith%'"}.
+            An example of such a query might be {@code "WHERE name LIKE '%searchString%'"}.
             &lt;/p&gt;
             The value for the variable idValue must then be set with an object of type
             {@link Value}, e.g., {@link NumberValue}, {@link TextValue} or
@@ -1730,8 +1729,8 @@
           <enumeration value="ASSOCIATE_ACCOUNT_API_ERROR">
             <annotation>
               <documentation>
-                An error occured while trying to associate an AdSense account with DFP. Unable to create an
-                association with AdSense or Ad Exchange account.
+                An error occurred while trying to associate an AdSense account with Ad Manager. Unable to
+                create an association with AdSense or Ad Exchange account.
               </documentation>
             </annotation>
           </enumeration>
@@ -3805,7 +3804,7 @@
           <enumeration value="COMPANION_DELIVERY_OPTION_REQUIRE_PREMIUM">
             <annotation>
               <documentation>
-                Companion delivery options require premium networks.
+                Companion delivery options require Ad Manager 360 networks.
               </documentation>
             </annotation>
           </enumeration>
@@ -3821,7 +3820,7 @@
               <documentation>
                 The line item priority is invalid if for dynamic allocation line items
                 it is different than the default for free publishers.  When allowed,
-                Premium publishers can change the priority to any value.
+                Ad Manager 360 users can change the priority to any value.
               </documentation>
             </annotation>
           </enumeration>
@@ -4327,8 +4326,8 @@
                 about 5 seconds and then retry the request. Note that this does not
                 guarantee the request will succeed. If it fails again, try increasing the
                 wait time.
-                &lt;p&gt;Another way to mitigate this error is to limit requests to 2 per second for
-                Small Business networks, or 8 per second for Premium networks. Once again
+                &lt;p&gt;Another way to mitigate this error is to limit requests to 8 per second for Ad Manager
+                360 accounts, or 2 per second for Ad Manager accounts. Once again
                 this does not guarantee that every request will succeed, but may help
                 reduce the number of times you receive this error.
               </documentation>
@@ -4478,7 +4477,7 @@
           <enumeration value="CREATION_NOT_ALLOWED">
             <annotation>
               <documentation>
-                Only DoubleClick Rich Media Studio can create a {@code RichMediaStudioCreative}.
+                Only Studio can create a {@code RichMediaStudioCreative}.
               </documentation>
             </annotation>
           </enumeration>
