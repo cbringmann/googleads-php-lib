@@ -302,8 +302,12 @@ class AdsSoapClient extends SoapClient
 
     private function processResponse($methodName, $soapFault = null)
     {
-        $this->lastResponseHeaderValues =
-            SoapHeaders::getSoapResponseHeaderValues($this->__getLastResponse());
+        try {
+            $this->lastResponseHeaderValues = SoapHeaders::getSoapResponseHeaderValues($this->__getLastResponse());
+        } catch (\Throwable $e) {
+            throw new \InvalidArgumentException('Process soap xml response headers failed with error: ' . $e->getMessage() . '. Invalid response: ' . $this->__getLastResponse(), $e->getCode());
+        }
+
         $this->lastSoapFault = $soapFault;
 
         $this->logSoapCall($methodName, $soapFault);
