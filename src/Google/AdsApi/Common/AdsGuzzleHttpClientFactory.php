@@ -18,6 +18,9 @@
 namespace Google\AdsApi\Common;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\CurlHandler;
+use GuzzleHttp\Handler\CurlMultiHandler;
+use GuzzleHttp\Handler\Proxy;
 use GuzzleHttp\HandlerStack;
 use Psr\Log\LoggerInterface;
 
@@ -66,7 +69,7 @@ final class AdsGuzzleHttpClientFactory implements GuzzleHttpClientFactory
         $config = $this->config;
         $config['handler'] = isset($config['handler'])
             ? clone $config['handler']
-            : HandlerStack::create();
+            : HandlerStack::create(Proxy::wrapSync(new CurlMultiHandler(), new CurlHandler()));
 
         // Add a logging middleware required by this library.
         $config['handler']->before(
